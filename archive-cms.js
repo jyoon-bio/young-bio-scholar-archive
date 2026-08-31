@@ -1,11 +1,14 @@
 (() => {
   'use strict';
 
-  const API_URL = '/api/archive';
-  const CACHE_KEY = 'young-bio-archive-cms-v1';
+  const LIST_API_URL = '/api/archive';
+  const DETAIL_API_URL = '/api/archive-detail';
+  const CACHE_KEY = 'young-bio-archive-list-v2';
+  const DETAIL_CACHE_PREFIX = 'young-bio-archive-detail-v2:';
   const CACHE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
   const state = {
     posts: [],
+    details: {},
     settings: { postsPerListPage: 10 },
     generatedAt: '',
     selectedYear: 'all',
@@ -190,8 +193,7 @@
     ).join('')}</table></div>`;
   }
 
-  function renderPost(slug, pushState = false) {
-    const post = state.posts.find((item) => item.slug === slug) || state.posts[0];
+  function paintPost(post, pushState = false) {
     if (!post) return showEmpty();
     state.currentSlug = post.slug;
 
@@ -243,6 +245,70 @@
 
     if (pushState) history.pushState({ slug: post.slug }, '', `/archive/${encodeURIComponent(post.slug)}`);
     window.scrollTo({ top: $('.archive-title-row').offsetTop, behavior: 'smooth' });
+  }
+
+  function detailCacheKey(slug) {
+    return `${DETAIL_CACHE_PREFIX}${slug}`;
+  }
+
+  function readDetailCache(slug) {
+    try {
+      const cached = JSON.parse(localStorage.getItem(detailCacheKey(slug)) || 'null');
+      if (!cached?.savedAt || !cached?.payload?.ok || !cached?.payload?.post) return null;
+      if (Date.now() - cached.savedAt > CACHE_MAX_AGE_MS) {
+        localStorage.removeItem(detailCacheKey(slug));
+        return null;
+      }
+      return cached.payload;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function writeDetailCache(slug, payload) {
+    try {
+      localStorage.setItem(detailCacheKey(slug), JSON.stringify({ savedAt: Date.now(), payload }));
+    } catch (error) {
+      console.warn('Post cache could not be saved.', error);
+    }
+  }
+
+  async function renderPost(slug, pushState = false) {
+    const summary = state.posts.find((item) => item.slug === slug) || state.posts[0];
+    if (!summary) return showEmpty();
+
+    const cachedPayload = readDetailCache(summary.slug);
+    if (cachedPayload) {
+      state.details[summary.slug] = cachedPayload.post;
+      paintPost(cachedPayload.post, pushState);
+    } else {
+      paintPost(summary, pushState);
+      $('#post-body').innerHTML = '<p class="cms-status">Loading this research entry…</p>';
+    }
+
+    try {
+      const response = await fetch(`${DETAIL_API_URL}?slug=${encodeURIComponent(summary.slug)}`, {
+        method: 'GET',
+        cache: 'no-store'
+      });
+      if (!response.ok) throw new Error(`Post request failed (${response.status}).`);
+      const payload = await response.json();
+      if (!payload.ok || !payload.post) throw new Error(payload.error || 'Invalid post response.');
+
+      writeDetailCache(summary.slug, payload);
+      state.details[summary.slug] = payload.post;
+      if (!cachedPayload || payload.generatedAt !== cachedPayload.generatedAt) paintPost(payload.post, false);
+    } catch (error) {
+      console.error(error);
+      if (!cachedPayload) {
+        $('#post-body').innerHTML = `
+          <div class="cms-error" role="alert">
+            <p>This research entry could not be loaded.</p>
+            <button class="page-btn" id="post-retry" type="button">RETRY</button>
+          </div>`;
+        $('#post-retry')?.addEventListener('click', () => renderPost(summary.slug, false));
+      }
+    }
   }
 
   function renderPostPagination() {
@@ -323,7 +389,7 @@
     else showLoading();
 
     try {
-      const response = await fetch(API_URL, { method: 'GET', redirect: 'follow', cache: 'no-store' });
+      const response = await fetch(LIST_API_URL, { method: 'GET', cache: 'no-store' });
       if (!response.ok) throw new Error(`API request failed (${response.status}).`);
       const payload = await response.json();
       if (!payload.ok) throw new Error(payload.message || payload.error || 'The CMS returned an error.');

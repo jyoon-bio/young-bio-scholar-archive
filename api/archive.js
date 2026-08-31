@@ -7,7 +7,7 @@ module.exports = async function handler(request, response) {
   }
 
   try {
-    const upstream = await fetch(CMS_URL, {
+    const upstream = await fetch(`${CMS_URL}?mode=list`, {
       method: 'GET',
       redirect: 'follow',
       headers: { Accept: 'application/json' }
@@ -22,11 +22,36 @@ module.exports = async function handler(request, response) {
       throw new Error(payload?.message || payload?.error || 'Invalid CMS response.');
     }
 
+    const listPayload = {
+      ok: true,
+      generatedAt: payload.generatedAt,
+      settings: payload.settings || {},
+      posts: (payload.posts || []).map((post) => ({
+        no: post.no,
+        title: post.title,
+        slug: post.slug,
+        url: post.url,
+        contentType: post.contentType,
+        activityDate: post.activityDate,
+        activityYear: post.activityYear,
+        publishDate: post.publishDate,
+        researchTheme: post.researchTheme,
+        authorNickname: post.authorNickname,
+        authorLogoUrl: post.authorLogoUrl,
+        featuredImageUrl: post.featuredImageUrl,
+        featuredImageAlt: post.featuredImageAlt,
+        researchQuestion: post.researchQuestion,
+        showOnHome: post.showOnHome,
+        showInProposals: post.showInProposals,
+        seo: post.seo
+      }))
+    };
+
     response.setHeader('Content-Type', 'application/json; charset=utf-8');
     response.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
     response.setHeader('CDN-Cache-Control', 'public, s-maxage=300, stale-while-revalidate=86400');
     response.setHeader('Vercel-CDN-Cache-Control', 'public, s-maxage=300, stale-while-revalidate=86400');
-    return response.status(200).json(payload);
+    return response.status(200).json(listPayload);
   } catch (error) {
     console.error('Archive CMS proxy error:', error);
     response.setHeader('Cache-Control', 'no-store');
