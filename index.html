@@ -110,11 +110,14 @@
     .hero::after{
       content:"";
       position:absolute;
-      inset:0;
+      inset:0 0 0 auto;
+      width:min(1100px,72vw);
       background-image:url("main-assets/main-hero.webp?v=20260831-2");
       background-repeat:no-repeat;
       background-position:right center;
       background-size:auto 100%;
+      -webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 18%,#000 38%,#000 100%);
+      mask-image:linear-gradient(90deg,transparent 0%,transparent 18%,#000 38%,#000 100%);
       z-index:0;
     }
 
@@ -1021,6 +1024,8 @@
       .hero::after{
         background-size:auto 104%;
         background-position:right 46%;
+        -webkit-mask-image:linear-gradient(90deg,transparent 0%,transparent 12%,#000 34%,#000 100%);
+        mask-image:linear-gradient(90deg,transparent 0%,transparent 12%,#000 34%,#000 100%);
       }
     }
 
@@ -1045,9 +1050,12 @@
       .hero{min-height:auto}
       .hero::after{
         inset:0;
+        width:auto;
         background-size:auto 100%;
         background-position:72% center;
         opacity:.34;
+        -webkit-mask-image:none;
+        mask-image:none;
       }
       .hero::before{
         background:linear-gradient(90deg,rgba(212,226,242,.96) 0%,rgba(212,226,242,.86) 60%,rgba(212,226,242,.54) 100%);
