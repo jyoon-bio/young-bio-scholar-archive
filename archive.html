@@ -1,0 +1,794 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A chronological archive of biology research notes, paper reviews, questions, and proposals by a young bio-scholar.">
+  <title>Archive | Young Bio-Scholar's Research Archive</title>
+  <style>
+    :root {
+      --navy: #0b2b55;
+      --navy-deep: #08264d;
+      --ink: #112a4d;
+      --heading: #0f2d55;
+      --body: #354a5d;
+      --muted: #6d7c89;
+      --green: #5d7f62;
+      --green-pale: #edf4e9;
+      --blue-pale: #f2f7fb;
+      --line: #d8e1e8;
+      --line-soft: #e8eef2;
+      --paper: #ffffff;
+      --page: #f8fafb;
+      --max: 1240px;
+      --reading: 820px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--page);
+      font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
+    }
+    button, select { font: inherit; }
+    a { color: inherit; text-decoration: none; }
+    button, a, select { -webkit-tap-highlight-color: transparent; }
+    [hidden] { display: none !important; }
+
+    .topbar {
+      height: 74px;
+      display: flex;
+      align-items: center;
+      color: #fff;
+      background: linear-gradient(90deg, #08284f 0%, #0b315d 100%);
+    }
+    .nav-wrap {
+      width: min(var(--max), calc(100% - 72px));
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+    }
+    .brand { display: flex; align-items: center; gap: 14px; }
+    .brand-mark { width: 34px; height: 44px; flex: 0 0 auto; }
+    .brand-text {
+      font-size: 17px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      line-height: 1.15;
+    }
+    .brand-text span { display: block; }
+    .primary-nav ul {
+      display: flex;
+      align-items: center;
+      gap: 54px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .primary-nav a {
+      position: relative;
+      display: block;
+      padding: 26px 0 22px;
+      font-size: 15px;
+    }
+    .primary-nav a.active::after {
+      content: "";
+      position: absolute;
+      right: 0;
+      bottom: 15px;
+      left: 0;
+      height: 2px;
+      background: #c8dda9;
+    }
+    .menu-toggle {
+      display: none;
+      width: 42px;
+      height: 42px;
+      border: 1px solid rgba(255,255,255,.4);
+      border-radius: 6px;
+      color: #fff;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .archive-shell {
+      width: min(var(--max), calc(100% - 72px));
+      margin: 0 auto;
+      padding: 48px 0 80px;
+    }
+    .archive-title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      padding-bottom: 23px;
+      border-bottom: 1px solid var(--ink);
+    }
+    .archive-title-row h1 {
+      margin: 0;
+      display: inline-flex;
+      align-items: center;
+      min-height: 30px;
+      padding: 7px 11px;
+      color: #2f8ce5;
+      background: #e7f2fc;
+      font-size: 13px;
+      line-height: 1;
+      letter-spacing: .02em;
+      font-weight: 400;
+    }
+    .post-list-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 0;
+      border: 0;
+      color: var(--navy);
+      background: transparent;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      cursor: pointer;
+    }
+    .post-list-toggle .icon { font-size: 18px; line-height: 1; transition: transform .2s ease; }
+    .post-list-toggle[aria-expanded="true"] .icon { transform: rotate(45deg); }
+
+    .post-list-panel {
+      background: transparent;
+    }
+    .post-list-inner {
+      margin-top: 18px;
+      padding: 28px 32px 30px;
+      background: #f7f9fc;
+    }
+    .filters {
+      display: grid;
+      grid-template-columns: 1.55fr 1fr 1fr;
+      gap: 20px;
+      padding: 0 0 26px;
+      border-bottom: 1px solid var(--line);
+    }
+    .filter-group label,
+    .filter-label {
+      display: block;
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+    }
+    .year-options { display: flex; flex-wrap: wrap; gap: 7px; }
+    .year-btn {
+      min-width: 58px;
+      padding: 8px 12px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      color: var(--body);
+      background: #fff;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .year-btn.active { border-color: var(--navy); color: #fff; background: var(--navy); }
+    .filter-group select {
+      width: 100%;
+      height: 39px;
+      padding: 0 34px 0 12px;
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      color: var(--body);
+      background: #fff;
+    }
+    .post-index { width: 100%; border-collapse: collapse; }
+    .post-index th {
+      padding: 14px 10px 10px;
+      color: var(--muted);
+      font-size: 10px;
+      letter-spacing: .11em;
+      text-align: left;
+    }
+    .post-index th:first-child,
+    .post-index td:first-child { width: 62px; padding-left: 0; }
+    .post-index th:nth-child(3), .post-index td:nth-child(3) { width: 88px; }
+    .post-index th:nth-child(4), .post-index td:nth-child(4) { width: 140px; }
+    .post-index th:last-child, .post-index td:last-child { width: 120px; padding-right: 0; }
+    .post-index td {
+      padding: 15px 10px;
+      border-top: 1px solid var(--line-soft);
+      color: var(--body);
+      font-size: 13px;
+      vertical-align: top;
+    }
+    .post-index .post-title-link {
+      display: inline;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      color: var(--ink);
+      background: transparent;
+      font-family: inherit;
+      font-size: 15px;
+      font-weight: 600;
+      line-height: inherit;
+      text-align: left;
+      cursor: pointer;
+    }
+    .post-index .post-title-link:hover { color: var(--green); text-decoration: underline; text-underline-offset: 3px; }
+    .empty-list { padding: 38px 0 22px; color: var(--muted); text-align: center; }
+
+    .content-wrap { width: min(var(--reading), 100%); margin: 0 auto; }
+    .post-header { padding: 60px 0 36px; border-bottom: 1px solid var(--line); }
+    .meta-kicker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 16px;
+      margin-bottom: 21px;
+      color: var(--green);
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: .11em;
+      text-transform: uppercase;
+    }
+    .meta-kicker span:not(:last-child)::after {
+      content: "";
+      display: inline-block;
+      width: 3px;
+      height: 3px;
+      margin-left: 16px;
+      border-radius: 50%;
+      background: #aab8c1;
+      vertical-align: middle;
+    }
+    .post-title {
+      margin: 0 0 25px;
+      color: var(--heading);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(38px, 5.1vw, 62px);
+      font-weight: 500;
+      line-height: 1.1;
+      letter-spacing: -.025em;
+    }
+    .post-details {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px 24px;
+      margin-top: 28px;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 650;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+    }
+    .author-profile {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--ink);
+    }
+    .author-logo {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      color: #fff;
+      background: var(--navy);
+    }
+    .author-logo svg { width: 20px; height: 25px; }
+    .author-name { font-weight: 750; letter-spacing: .08em; }
+    .published-date {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .published-date::before {
+      content: "";
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: #aab8c1;
+    }
+    .published-date strong {
+      color: inherit;
+      font-weight: inherit;
+    }
+
+    .post-body {
+      padding: 45px 0 20px;
+      color: var(--body);
+      font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+      font-size: 18px;
+    }
+    .post-body p { margin: 0 0 25px; }
+    .post-body h2 {
+      margin: 50px 0 18px;
+      color: var(--heading);
+      font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+      font-size: 22px;
+      line-height: 1.35;
+      letter-spacing: -.01em;
+    }
+    .research-question {
+      margin: 46px 0;
+      padding: 30px 34px 31px;
+      border-left: 4px solid #948ac4;
+      background: rgba(234, 232, 250, .70);
+    }
+    .research-question .label {
+      display: block;
+      margin-bottom: 12px;
+      color: #6f679e;
+      font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+      font-size: 11px;
+      font-weight: 750;
+      letter-spacing: .13em;
+    }
+    .research-question p { margin: 0; color: var(--heading); font-size: 23px; line-height: 1.45; }
+    .research-question p,
+    .reflection p { font-family: Georgia, "Times New Roman", serif; }
+    .reflection {
+      margin: 44px 0;
+      padding: 31px 34px;
+      border: 1px solid #cfdae1;
+      background: var(--blue-pale);
+    }
+    .reflection h2 { margin: 0 0 14px; }
+    .reflection p:last-child { margin-bottom: 0; }
+    .article-quote {
+      position: relative;
+      margin: 46px 0;
+      padding: 5px 34px 5px 38px;
+      border-left: 3px solid #9aaec0;
+    }
+    .article-quote::before {
+      content: "“";
+      position: absolute;
+      top: -14px;
+      left: 14px;
+      color: #b7c6d2;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 58px;
+      line-height: 1;
+    }
+    .article-quote blockquote {
+      margin: 0;
+      color: var(--heading);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 24px;
+      line-height: 1.55;
+    }
+    .article-quote cite {
+      display: block;
+      margin-top: 15px;
+      color: var(--muted);
+      font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+      font-size: 12px;
+      font-style: normal;
+      letter-spacing: .04em;
+    }
+    .post-notes {
+      margin-top: 48px;
+      padding-top: 24px;
+      border-top: 1px solid var(--line-soft);
+      color: var(--muted);
+      font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+      font-size: 13px;
+    }
+    .post-notes h2 { margin-top: 0; font-size: 15px; letter-spacing: .04em; }
+    .post-notes ul { margin: 0; padding-left: 19px; }
+    .post-notes li { margin: 7px 0; }
+    .references {
+      margin-top: 34px;
+      padding-top: 28px;
+      border-top: 1px solid var(--line);
+      font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+      font-size: 13px;
+    }
+    .references h2 { margin-top: 0; font-size: 16px; letter-spacing: .04em; }
+    .references ol { margin: 0; padding-left: 20px; }
+    .references li { margin: 8px 0; }
+
+    .post-navigation {
+      margin-top: 54px;
+      padding: 28px 0 12px;
+      border-top: 1px solid var(--ink);
+    }
+    .pagination { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 6px; }
+    .page-btn, .page-ellipsis {
+      min-width: 38px;
+      height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid transparent;
+      color: var(--body);
+      background: transparent;
+      font-size: 13px;
+    }
+    .page-btn { cursor: pointer; }
+    .page-btn:hover { border-color: var(--line); background: #fff; }
+    .page-btn.active { border-color: var(--navy); color: #fff; background: var(--navy); }
+    .page-btn:disabled { color: #b7c0c7; cursor: default; }
+    .list-pagination { margin-top: 21px; }
+
+    .site-footer {
+      margin-top: 72px;
+      color: #d7e1e9;
+      background: var(--navy-deep);
+    }
+    .footer-inner {
+      width: min(var(--max), calc(100% - 72px));
+      margin: 0 auto;
+      padding: 32px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      font-size: 12px;
+    }
+    .footer-name { color: #fff; font-weight: 700; letter-spacing: .08em; }
+    .footer-nav { display: flex; gap: 24px; }
+    .author-logo img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+    .featured-image, .article-image { margin: 30px 0; }
+    .featured-image img, .article-image img { display: block; width: 100%; height: auto; }
+    .featured-image figcaption, .article-image figcaption { margin-top: 9px; color: var(--muted); font-size: 12px; }
+    .cms-status, .cms-error { padding: 28px; background: #f5f3ed; border-left: 3px solid var(--accent); }
+    .cms-error .page-btn { margin-top: 14px; }
+    .article-table-wrap { margin: 30px 0; overflow-x: auto; }
+    .article-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .article-table th, .article-table td { padding: 11px 12px; border: 1px solid var(--line-soft); text-align: left; }
+    .article-table th { background: #f5f3ed; font-weight: 700; }
+
+    @media (max-width: 900px) {
+      .primary-nav ul { gap: 28px; }
+      .filters { grid-template-columns: 1fr 1fr; }
+      .filters .filter-group:first-child { grid-column: 1 / -1; }
+      .archive-shell { width: min(100% - 48px, var(--max)); }
+    }
+
+    @media (max-width: 760px) {
+      .topbar { height: auto; min-height: 68px; padding: 12px 0; }
+      .nav-wrap { width: calc(100% - 32px); flex-wrap: wrap; }
+      .brand-text { font-size: 13px; }
+      .brand-mark { width: 29px; height: 38px; }
+      .menu-toggle { display: inline-grid; place-items: center; }
+      .primary-nav { width: 100%; display: none; }
+      .primary-nav.open { display: block; }
+      .primary-nav ul { display: grid; gap: 0; padding: 8px 0 2px; }
+      .primary-nav a { padding: 11px 0; border-bottom: 1px solid rgba(255,255,255,.12); }
+      .primary-nav a.active::after { right: auto; bottom: 7px; width: 50px; }
+      .archive-shell { width: calc(100% - 36px); padding: 34px 0 56px; }
+      .archive-title-row { align-items: flex-end; padding-bottom: 17px; }
+      .archive-title-row h1 { font-size: 13px; }
+      .post-list-toggle { font-size: 11px; }
+      .post-list-inner {
+        margin-top: 14px;
+        padding: 22px 18px 24px;
+      }
+      .filters { grid-template-columns: 1fr; gap: 18px; }
+      .filters .filter-group:first-child { grid-column: auto; }
+      .post-index thead { display: none; }
+      .post-index, .post-index tbody, .post-index tr, .post-index td { display: block; width: 100% !important; }
+      .post-index tr { padding: 15px 0; border-top: 1px solid var(--line-soft); }
+      .post-index td { display: inline; padding: 0; border: 0; color: var(--muted); font-size: 11px; }
+      .post-index td:not(:last-child)::after { content: " · "; }
+      .post-index td:nth-child(2) { display: block; margin: 6px 0 7px; }
+      .post-index td:nth-child(2)::after { content: ""; }
+      .post-index .post-title-link { font-size: 15px; line-height: 1.35; }
+      .post-header { padding: 43px 0 28px; }
+      .post-title { font-size: 38px; }
+      .post-details { gap: 12px 16px; }
+      .post-body { padding-top: 34px; font-size: 17px; }
+      .post-body h2 { margin-top: 39px; font-size: 20px; }
+      .research-question, .reflection { margin: 36px 0; padding: 25px 23px; }
+      .research-question p { font-size: 20px; }
+      .article-quote { margin: 36px 0; padding: 4px 20px 4px 30px; }
+      .article-quote::before { left: 10px; font-size: 48px; }
+      .article-quote blockquote { font-size: 21px; }
+      .footer-inner { width: calc(100% - 36px); align-items: flex-start; flex-direction: column; }
+    }
+
+    @media (max-width: 430px) {
+      .brand-text { font-size: 11px; letter-spacing: .09em; }
+      .archive-title-row { gap: 12px; }
+      .archive-title-row h1 { font-size: 13px; }
+      .post-list-toggle { gap: 6px; letter-spacing: .08em; }
+      .post-title { font-size: 34px; }
+      .post-details { align-items: flex-start; flex-direction: column; }
+      .published-date { margin-left: 46px; }
+      .page-btn, .page-ellipsis { min-width: 32px; height: 35px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="nav-wrap">
+      <a class="brand" href="index.html" aria-label="Young Bio-Scholar's Research Archive home">
+        <svg class="brand-mark" viewBox="0 0 40 52" aria-hidden="true">
+          <path d="M9 4c15 8 7 17 22 25M31 4C16 12 24 21 9 29M11 9h16M10 16h18M12 23h15M12 30h16M10 37h18M12 44h15" stroke="#fff" fill="none" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <div class="brand-text"><span>YOUNG BIO-SCHOLAR’S</span><span>RESEARCH ARCHIVE</span></div>
+      </a>
+      <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Open menu">☰</button>
+      <nav class="primary-nav" id="primary-nav" aria-label="Primary">
+        <ul>
+          <li><a href="index.html">HOME</a></li>
+          <li><a class="active" href="archive.html" aria-current="page">ARCHIVE</a></li>
+          <li><a href="index.html#proposals">PROPOSALS</a></li>
+          <li><a href="index.html#about-section">ABOUT</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="archive-shell">
+    <div class="archive-title-row">
+      <h1>RESEARCH ARCHIVE</h1>
+      <button class="post-list-toggle" type="button" aria-expanded="false" aria-controls="post-list-panel">
+        <span>POST LIST</span><span class="icon" aria-hidden="true">＋</span>
+      </button>
+    </div>
+
+    <section class="post-list-panel" id="post-list-panel" hidden aria-label="Post list">
+      <div class="post-list-inner">
+        <div class="filters">
+          <div class="filter-group">
+            <span class="filter-label">Activity Year</span>
+            <div class="year-options" role="group" aria-label="Filter by activity year">
+              <button class="year-btn active" type="button" data-year="all">ALL</button>
+              <button class="year-btn" type="button" data-year="2023">2023</button>
+              <button class="year-btn" type="button" data-year="2024">2024</button>
+              <button class="year-btn" type="button" data-year="2025">2025</button>
+              <button class="year-btn" type="button" data-year="2026">2026</button>
+            </div>
+          </div>
+          <div class="filter-group">
+            <label for="type-filter">Content Type</label>
+            <select id="type-filter"><option value="all">All Types</option></select>
+          </div>
+          <div class="filter-group">
+            <label for="theme-filter">Research Theme</label>
+            <select id="theme-filter"><option value="all">All Themes</option></select>
+          </div>
+        </div>
+
+        <table class="post-index">
+          <thead><tr><th>NO.</th><th>TITLE</th><th>YEAR</th><th>TYPE</th><th>PUBLISHED</th></tr></thead>
+          <tbody id="post-index-body"></tbody>
+        </table>
+        <p class="empty-list" id="empty-list" hidden>No posts match the selected filters.</p>
+        <nav class="pagination list-pagination" id="list-pagination" aria-label="Post list pages"></nav>
+      </div>
+    </section>
+
+    <article class="content-wrap" id="post" aria-live="polite">
+      <header class="post-header">
+        <div class="meta-kicker" id="meta-kicker"></div>
+        <h2 class="post-title" id="post-title"></h2>
+        <div class="post-details" id="post-details"></div>
+      </header>
+      <div class="post-body" id="post-body"></div>
+      <nav class="post-navigation" aria-label="Navigate between posts">
+        <div class="pagination" id="post-pagination"></div>
+      </nav>
+    </article>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div><div class="footer-name">YOUNG BIO-SCHOLAR’S RESEARCH ARCHIVE</div><div>A record of reading, questioning, connecting, and proposing.</div></div>
+      <nav class="footer-nav" aria-label="Footer"><a href="index.html">HOME</a><a href="archive.html">ARCHIVE</a></nav>
+    </div>
+  </footer>
+
+  <script type="text/plain" id="legacy-sample-script">
+    /* Replace this sample array with normalized Google Sheets/CMS records later. */
+    const posts = [
+      {no:91, year:2026, type:'Question', theme:'Molecular & Cellular Biology', date:'JUL 14, 2026', title:'Can Rare Cell Populations Predict Disease?', deck:'A question about whether small cellular subpopulations can reveal changes that disappear in bulk measurements.'},
+      {no:92, year:2026, type:'Proposal', theme:'Molecular & Cellular Biology', date:'JUL 21, 2026', title:'Identifying Disease-Relevant Cell Populations', deck:'A student research proposal for finding cell populations that may be associated with disease progression.'},
+      {no:93, year:2026, type:'Paper Review', theme:'Immunology', date:'JUL 28, 2026', title:'Microbiome and Immune Regulation', deck:'Reading how researchers investigate the relationship between microbial communities and immune regulation.'},
+      {no:94, year:2026, type:'Critical Analysis', theme:'Immunology', date:'AUG 02, 2026', title:'The Problem of Causality in Microbiome Research', deck:'Why an observed association between microbes and disease does not automatically establish biological cause.'},
+      {no:95, year:2026, type:'Proposal', theme:'Immunology', date:'AUG 07, 2026', title:'Testing a Microbiome–Immune Hypothesis', deck:'A proposal that turns a broad association into a specific and testable biological question.'},
+      {no:96, year:2026, type:'Paper Review', theme:'Biotechnology', date:'AUG 11, 2026', title:'AI-Assisted Protein Structure Prediction', deck:'A review of how computational predictions can support—but not replace—biological investigation.'},
+      {no:97, year:2026, type:'Question', theme:'Biotechnology', date:'AUG 14, 2026', title:'Prediction vs. Biological Validation', deck:'If a model predicts a structure or function, what evidence is still needed in the laboratory?'},
+      {no:98, year:2026, type:'Research Thread', theme:'Biotechnology', date:'AUG 18, 2026', title:'Biology + Data + Engineering', deck:'Connecting biological questions with quantitative evidence, computation, and engineering design.'},
+      {no:99, year:2026, type:'Capstone', theme:'Biomedical Science', date:'AUG 22, 2026', title:'My Current Research Questions', deck:'A capstone record of the biological questions I now consider most important and most testable.'},
+      {
+        no:100,
+        year:2026,
+        type:'Reflection',
+        theme:'Biomedical Science',
+        date:'AUG 27, 2026',
+        title:'How My Questions Changed Over Four Years',
+        deck:'Looking back at how foundational biology notes gradually developed into evidence-based questions, critical analysis, and independent research ideas.',
+        quote:{
+          text:'The most valuable change over four years was not simply knowing more biology. It was becoming more careful about what I thought the evidence allowed me to say.',
+          source:'From this reflection'
+        },
+        notes:[
+          'This reflection connects the four stages of the archive: Foundations, Exploration, Analysis, and Independent Inquiry.',
+          'Notes are optional and appear only when a post needs an editorial or contextual explanation.'
+        ],
+        references:[
+          'National Academies of Sciences, Engineering, and Medicine. Science Literacy: Concepts, Contexts, and Consequences. The National Academies Press, 2016. https://doi.org/10.17226/23595',
+          'American Association for the Advancement of Science. Vision and Change in Undergraduate Biology Education: A Call for Action. 2011.'
+        ]
+      }
+    ];
+
+    let selectedYear = 'all';
+    let selectedType = 'all';
+    let selectedTheme = 'all';
+    let listPage = 1;
+    let currentPost = 100;
+    const perPage = 5;
+
+    const $ = (selector) => document.querySelector(selector);
+    const unique = (key) => [...new Set(posts.map(post => post[key]))].sort();
+    const orderedPosts = [...posts].sort((a, b) => b.no - a.no);
+    const displayNumber = (post) => orderedPosts.findIndex(item => item.no === post.no) + 1;
+
+    function fillSelect(selector, values) {
+      const select = $(selector);
+      values.forEach(value => {
+        const option = document.createElement('option');
+        option.value = value;
+        option.textContent = value;
+        select.appendChild(option);
+      });
+    }
+
+    function bodyFor(post) {
+      const quote = post.quote?.text ? `
+        <figure class="article-quote">
+          <blockquote>${post.quote.text}</blockquote>
+          ${post.quote.source ? `<cite>— ${post.quote.source}</cite>` : ''}
+        </figure>` : '';
+      const notes = post.notes?.length ? `
+        <section class="post-notes" aria-labelledby="notes-heading">
+          <h2 id="notes-heading">NOTES</h2>
+          <ul>${post.notes.map(note => `<li>${note}</li>`).join('')}</ul>
+        </section>` : '';
+      const references = post.references?.length ? `
+        <section class="references" aria-labelledby="references-heading">
+          <h2 id="references-heading">REFERENCES</h2>
+          <ol>${post.references.map(reference => `<li>${reference}</li>`).join('')}</ol>
+        </section>` : '';
+      if (post.no === 100) {
+        return `
+          <p>When I first began recording biology, most of my questions asked how individual parts worked: what makes a cell alive, how DNA stores information, and why mutations occur. Those questions were useful because they gave me a vocabulary for looking more closely.</p>
+          <p>As I continued, the questions changed. I became less interested in collecting a single correct answer and more interested in the evidence behind an explanation. Reading about gene editing, immune responses, disease models, and biological data made me ask what a study could actually demonstrate—and what remained uncertain.</p>
+          ${quote}
+          <h2>From concepts to evidence</h2>
+          <p>A concept note usually began with “What is this?” A research note added “How does it work?” Paper reviews introduced another layer: “How do the researchers know?” Learning to separate a result from an interpretation changed the way I read scientific claims.</p>
+          <div class="research-question"><span class="label">MY CONTINUING QUESTION</span><p>How can a biological question become specific enough to test while remaining meaningful enough to matter?</p></div>
+          <h2>Questions as a connected record</h2>
+          <p>The archive shows that a question rarely ends when a post is finished. A note about mutation can lead to CRISPR, off-target effects, clinical benefit, and the problem of precision. A question about immune recognition can develop into ideas about engineered cells and selective treatment.</p>
+          <p>This is why I now see research less as a sequence of answers and more as a sequence of better-defined questions. The most valuable change over four years was not simply knowing more biology. It was becoming more careful about what I thought the evidence allowed me to say.</p>
+          <div class="reflection"><h2>Reflection</h2><p>I want the next stage of this archive to preserve uncertainty instead of hiding it. Each new post should show what I learned, what changed my mind, and which question deserves to be carried forward.</p></div>
+          ${notes}
+          ${references}`;
+      }
+      return `
+        <p>This page is a representative CMS-ready post layout for <em>${post.title}</em>. The final article body will be loaded from the corresponding Google Sheets record while preserving this reading structure.</p>
+        <h2>What I am examining</h2>
+        <p>The post will introduce the biological context, identify the evidence being examined, and distinguish established findings from questions that remain open.</p>
+        <div class="research-question"><span class="label">MY QUESTION</span><p>${post.deck}</p></div>
+        <div class="reflection"><h2>Reflection</h2><p>This section will record how the evidence changed my understanding and which question should be explored next.</p></div>
+        <div class="references"><h2>REFERENCES</h2><ol><li>Original paper and supporting sources will be connected through the CMS.</li></ol></div>`;
+    }
+
+    function renderPost(number, pushState = false) {
+      const post = posts.find(item => item.no === number) || posts[posts.length - 1];
+      currentPost = post.no;
+      $('#meta-kicker').innerHTML = `<span>${post.type}</span><span>${post.year}</span><span>${post.theme}</span>`;
+      $('#post-title').textContent = post.title;
+      $('#post-details').innerHTML = `
+        <span class="author-profile">
+          <span class="author-logo" aria-hidden="true">
+            <svg viewBox="0 0 40 52"><path d="M9 4c15 8 7 17 22 25M31 4C16 12 24 21 9 29M11 9h16M10 16h18M12 23h15M12 30h16M10 37h18M12 44h15" stroke="currentColor" fill="none" stroke-width="1.7" stroke-linecap="round"/></svg>
+          </span>
+          <span class="author-name">YOUNG BIO-SCHOLAR</span>
+        </span>
+        <span class="published-date">PUBLISHED <strong>${post.date}</strong></span>`;
+      $('#post-body').innerHTML = bodyFor(post);
+      renderPostPagination();
+      if (pushState) history.pushState({post: post.no}, '', `#post-${post.no}`);
+      document.title = `${post.title} | Young Bio-Scholar's Research Archive`;
+      window.scrollTo({top: document.querySelector('.archive-title-row').offsetTop, behavior: 'smooth'});
+    }
+
+    function filterPosts() {
+      return posts.filter(post =>
+        (selectedYear === 'all' || String(post.year) === selectedYear) &&
+        (selectedType === 'all' || post.type === selectedType) &&
+        (selectedTheme === 'all' || post.theme === selectedTheme)
+      ).sort((a,b) => b.no - a.no);
+    }
+
+    function renderList() {
+      const filtered = filterPosts();
+      const pageCount = Math.max(1, Math.ceil(filtered.length / perPage));
+      listPage = Math.min(listPage, pageCount);
+      const visible = filtered.slice((listPage - 1) * perPage, listPage * perPage);
+      $('#post-index-body').innerHTML = visible.map(post => `
+        <tr>
+          <td>${displayNumber(post)}</td>
+          <td><button class="post-title-link" type="button" data-post="${post.no}">${post.title}</button></td>
+          <td>${post.year}</td><td>${post.type}</td><td>${post.date}</td>
+        </tr>`).join('');
+      $('#empty-list').hidden = visible.length > 0;
+      $('#list-pagination').innerHTML = pageCount > 1 ? Array.from({length: pageCount}, (_,i) =>
+        `<button class="page-btn ${i + 1 === listPage ? 'active' : ''}" type="button" data-list-page="${i + 1}" aria-label="Post list page ${i + 1}">${i + 1}</button>`
+      ).join('') : '';
+      document.querySelectorAll('[data-post]').forEach(button => button.addEventListener('click', () => {
+        renderPost(Number(button.dataset.post), true);
+        closeList();
+      }));
+      document.querySelectorAll('[data-list-page]').forEach(button => button.addEventListener('click', () => {
+        listPage = Number(button.dataset.listPage);
+        renderList();
+      }));
+    }
+
+    function renderPostPagination() {
+      const currentRank = displayNumber(posts.find(post => post.no === currentPost));
+      const total = orderedPosts.length;
+      const numbers = [1, currentRank - 2, currentRank - 1, currentRank, currentRank + 1, currentRank + 2, total]
+        .filter(rank => rank >= 1 && rank <= total)
+        .filter((rank, index, array) => array.indexOf(rank) === index)
+        .sort((a,b) => a-b);
+      const newerPost = currentRank > 1 ? orderedPosts[currentRank - 2] : null;
+      const olderPost = currentRank < total ? orderedPosts[currentRank] : null;
+      let html = `<button class="page-btn" type="button" data-nav="${newerPost?.no || ''}" aria-label="Newer post" ${!newerPost ? 'disabled' : ''}>←</button>`;
+      numbers.forEach((rank, index) => {
+        if (index && rank - numbers[index - 1] > 1) html += '<span class="page-ellipsis">…</span>';
+        const target = orderedPosts[rank - 1];
+        html += `<button class="page-btn ${rank === currentRank ? 'active' : ''}" type="button" data-nav="${target.no}" aria-label="Post ${rank}" ${rank === currentRank ? 'aria-current="page"' : ''}>${rank}</button>`;
+      });
+      html += `<button class="page-btn" type="button" data-nav="${olderPost?.no || ''}" aria-label="Older post" ${!olderPost ? 'disabled' : ''}>→</button>`;
+      $('#post-pagination').innerHTML = html;
+      document.querySelectorAll('[data-nav]').forEach(button => button.addEventListener('click', () => {
+        if (!button.disabled) renderPost(Number(button.dataset.nav), true);
+      }));
+    }
+
+    function closeList() {
+      $('#post-list-panel').hidden = true;
+      $('.post-list-toggle').setAttribute('aria-expanded', 'false');
+    }
+
+    $('.post-list-toggle').addEventListener('click', () => {
+      const expanded = $('.post-list-toggle').getAttribute('aria-expanded') === 'true';
+      $('.post-list-toggle').setAttribute('aria-expanded', String(!expanded));
+      $('#post-list-panel').hidden = expanded;
+    });
+    $('.menu-toggle').addEventListener('click', () => {
+      const expanded = $('.menu-toggle').getAttribute('aria-expanded') === 'true';
+      $('.menu-toggle').setAttribute('aria-expanded', String(!expanded));
+      $('.primary-nav').classList.toggle('open', !expanded);
+    });
+    document.querySelectorAll('.year-btn').forEach(button => button.addEventListener('click', () => {
+      document.querySelectorAll('.year-btn').forEach(item => item.classList.remove('active'));
+      button.classList.add('active'); selectedYear = button.dataset.year; listPage = 1; renderList();
+    }));
+    $('#type-filter').addEventListener('change', event => { selectedType = event.target.value; listPage = 1; renderList(); });
+    $('#theme-filter').addEventListener('change', event => { selectedTheme = event.target.value; listPage = 1; renderList(); });
+    window.addEventListener('popstate', event => renderPost(event.state?.post || Number(location.hash.replace('#post-', '')) || 100));
+
+    fillSelect('#type-filter', unique('type'));
+    fillSelect('#theme-filter', unique('theme'));
+    renderList();
+    renderPost(Number(location.hash.replace('#post-', '')) || 100);
+  </script>
+  <script src="archive-cms.js"></script>
+</body>
+</html>

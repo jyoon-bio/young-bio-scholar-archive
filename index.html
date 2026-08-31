@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Young Bio-Scholar's Research Archive</title>
+  <style>
+    :root{
+      --navy:#0b2b55;
+      --navy-2:#123b6b;
+      --green:#5d7f62;
+      --green-light:#b7d1a4;
+      --blue-pale:#eef5fb;
+      --line:#d8e1e8;
+      --text:#112a4d;
+      --muted:#526171;
+      --white:#ffffff;
+      --lav:#d6d8f1;
+      --g9:#dceadb;
+      --g10:#e0eee3;
+      --g11:#dfeaf9;
+      --g12:#ebe8fb;
+      --max:1440px;
+    }
+
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family: Inter, "Helvetica Neue", Arial, sans-serif;
+      color:var(--text);
+      background:#fff;
+      line-height:1.45;
+    }
+
+    a{color:inherit;text-decoration:none}
+
+    .topbar{
+      background:linear-gradient(90deg,#08284f 0%,#0b315d 100%);
+      color:#fff;
+      height:74px;
+      display:flex;
+      align-items:center;
+    }
+
+    .nav-wrap{
+      width:min(var(--max),calc(100% - 72px));
+      margin:0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:32px;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      min-width:280px;
+    }
+
+    .brand-mark{
+      width:34px;
+      height:44px;
+      flex:0 0 auto;
+    }
+
+    .brand-text{
+      font-weight:700;
+      letter-spacing:.12em;
+      font-size:17px;
+      line-height:1.15;
+    }
+
+    .brand-text span{display:block}
+
+    nav ul{
+      list-style:none;
+      display:flex;
+      gap:54px;
+      padding:0;
+      margin:0;
+      align-items:center;
+    }
+
+    nav a{
+      position:relative;
+      font-size:15px;
+      letter-spacing:.01em;
+      padding:26px 0 22px;
+    }
+
+    nav a.active::after{
+      content:"";
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:15px;
+      height:2px;
+      background:#c8dda9;
+    }
+
+    .hero{
+      min-height:500px;
+      position:relative;
+      overflow:hidden;
+      background:
+        linear-gradient(90deg,
+          #fff 0%,
+          #fff 36%,
+          rgba(246,249,252,.96) 45%,
+          rgba(235,244,250,.76) 56%,
+          rgba(222,239,249,.18) 69%,
+          rgba(222,239,249,0) 100%);
+    }
+
+    .hero::after{
+      content:"";
+      position:absolute;
+      inset:0;
+      background-image:url("main-assets/main-hero.webp");
+      background-repeat:no-repeat;
+      background-position:right center;
+      background-size:auto 100%;
+      z-index:0;
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      z-index:1;
+      inset:0;
+      background:
+        linear-gradient(90deg,
+          rgba(255,255,255,1) 0%,
+          rgba(255,255,255,.99) 31%,
+          rgba(255,255,255,.94) 40%,
+          rgba(255,255,255,.72) 48%,
+          rgba(255,255,255,.30) 58%,
+          rgba(255,255,255,.06) 67%,
+          rgba(255,255,255,0) 76%);
+      pointer-events:none;
+    }
+
+    .hero-inner{
+      position:relative;
+      z-index:2;
+      width:min(var(--max),calc(100% - 96px));
+      margin:0 auto;
+      padding:96px 0 82px;
+    }
+
+    .hero h1{
+      margin:0 0 34px;
+      max-width:720px;
+      font-size:55px;
+      line-height:1.12;
+      letter-spacing:.015em;
+      font-weight:800;
+      color:#102d57;
+    }
+
+    .hero h1 .green{color:#5d7b61}
+
+    .hero-copy{
+      font-size:24px;
+      line-height:1.45;
+      max-width:550px;
+      margin:0;
+      color:#0e2b50;
+    }
+
+    .main-grid{
+      width:min(var(--max),calc(100% - 96px));
+      margin:26px auto 30px;
+      display:grid;
+      grid-template-columns:290px 1fr 300px;
+      gap:20px;
+      align-items:stretch;
+    }
+
+    .dark-card{
+      background:linear-gradient(180deg,#0d3260,#08264d);
+      color:#fff;
+      border-radius:16px;
+      padding:26px 24px 28px;
+      min-height:338px;
+    }
+
+    .dark-card h3{
+      margin:0 0 22px;
+      color:#b6d09f;
+      font-size:20px;
+      letter-spacing:.02em;
+    }
+
+    .about-copy{
+      font-size:15px;
+      line-height:1.55;
+      color:#f2f6fb;
+    }
+
+    .more-btn{
+      margin-top:26px;
+      height:40px;
+      border:1px solid #a6c39f;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:20px;
+      font-size:14px;
+      color:#cce1bc;
+      transition:.2s ease;
+    }
+
+    .more-btn:hover{background:rgba(255,255,255,.05);transform:translateY(-1px)}
+
+    .journey{
+      border:1px solid var(--line);
+      border-radius:16px;
+      padding:20px 26px 28px;
+      min-height:338px;
+      background:#fff;
+    }
+
+    .journey h3{
+      text-align:center;
+      margin:0 0 30px;
+      font-size:19px;
+      letter-spacing:.06em;
+    }
+
+    .timeline{
+      position:relative;
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:14px;
+    }
+
+    .timeline::before{
+      content:"";
+      position:absolute;
+      left:10%;
+      right:10%;
+      top:41px;
+      height:1px;
+      background:#cfd9e1;
+      z-index:0;
+    }
+
+    .stage{
+      text-align:center;
+      position:relative;
+      z-index:1;
+    }
+
+    .icon-circle{
+      width:70px;
+      height:70px;
+      border-radius:50%;
+      margin:0 auto 16px;
+      display:grid;
+      place-items:center;
+      border:9px solid rgba(255,255,255,.9);
+    }
+
+    .g9 .icon-circle{background:var(--g9); color:#517551}
+    .g10 .icon-circle{background:var(--g10); color:#477854}
+    .g11 .icon-circle{background:var(--g11); color:#3d63a0}
+    .g12 .icon-circle{background:var(--g12); color:#5b4ea4}
+
+    .stage svg{width:31px;height:31px;stroke:currentColor;fill:none;stroke-width:1.8}
+
+    .grade{
+      font-weight:700;
+      font-size:17px;
+      margin-bottom:3px;
+    }
+
+    .stage-name{
+      font-weight:700;
+      font-size:13px;
+      letter-spacing:.035em;
+      margin-bottom:16px;
+    }
+
+    .stage p{
+      font-size:13px;
+      line-height:1.35;
+      color:#324454;
+      margin:0 auto;
+      max-width:155px;
+    }
+
+    .numbers h3{margin-bottom:14px}
+    .stat{
+      display:grid;
+      grid-template-columns:58px 1fr;
+      gap:16px;
+      align-items:center;
+      min-height:69px;
+    }
+
+    .stat + .stat{border-top:1px solid rgba(255,255,255,.22)}
+
+    .stat-icon{
+      width:46px;height:46px;border:1px solid rgba(255,255,255,.7);
+      border-radius:50%;display:grid;place-items:center;
+    }
+
+    .stat-icon svg{width:25px;height:25px;stroke:#fff;fill:none;stroke-width:1.6;color:#fff}
+    .stat-label{font-size:16px;font-weight:500;color:#f7f9fc}
+    .stat-sub{font-size:12px;color:#b9c9d9;margin-top:2px}
+    a.stat{color:inherit;text-decoration:none;transition:.2s ease}
+    a.stat:hover{background:rgba(255,255,255,.035);transform:translateX(2px)}
+    a.stat .stat-icon{font-size:12px;font-weight:700;letter-spacing:.04em;color:#fff}
+
+    .main-bottom-banner{
+      border-top:1px solid #e3ece7;
+      background:#deebfb;
+      text-align:center;
+      padding:25px 20px 28px;
+      color:#8e7aaa;
+      letter-spacing:.34em;
+      font-size:12px;
+    }
+
+
+    /* SECTION 02 — LATEST FROM THE ARCHIVE */
+    .latest-section{
+      background:#f7f9fb;
+      border-top:1px solid #e4ebef;
+      padding:86px 0 96px;
+    }
+
+    .latest-inner{
+      width:min(var(--max),calc(100% - 96px));
+      margin:0 auto;
+    }
+
+    .latest-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:24px;
+      margin-bottom:28px;
+    }
+
+    .latest-head h2{
+      margin:0;
+      color:var(--navy);
+      font-size:31px;
+      line-height:1.15;
+      font-weight:700;
+      letter-spacing:.025em;
+    }
+
+    .view-all{
+      color:#526171;
+      font-size:13px;
+      font-weight:500;
+      letter-spacing:.06em;
+      padding-bottom:3px;
+      border-bottom:1px solid #b8c4cc;
+      transition:.2s ease;
+      white-space:nowrap;
+    }
+
+    .view-all:hover{
+      color:var(--navy);
+      border-color:var(--navy);
+      transform:translateX(2px);
+    }
+
+    .post-grid{
+      display:grid;
+      grid-template-columns:repeat(4,minmax(0,1fr));
+      gap:20px;
+    }
+
+    .post-card{
+      --accent:#4C9BC6;
+      position:relative;
+      min-height:445px;
+      padding:34px 24px 23px;
+      background:#fff;
+      border:1px solid #d9e3e8;
+      border-top:6px solid var(--accent);
+      border-radius:0 0 10px 10px;
+      display:flex;
+      flex-direction:column;
+      transition:transform .2s ease,border-color .2s ease,box-shadow .2s ease;
+    }
+
+    .post-card:hover{
+      transform:translateY(-2px);
+      border-color:#c7d4dc;
+      box-shadow:0 8px 24px rgba(24,54,77,.06);
+    }
+
+    .post-card.review{--accent:#4C9BC6}
+    .post-card.analysis{--accent:#62A990}
+    .post-card.question{--accent:#9d98c9}
+    .post-card.latest{
+      --accent:#8eae65;
+      background:#fbfdf8;
+    }
+
+    .post-top{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:25px;
+    }
+
+    .post-type{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      color:var(--accent);
+      font-size:12px;
+      font-weight:600;
+      letter-spacing:.075em;
+      text-transform:uppercase;
+    }
+
+    .post-type svg{
+      width:19px;
+      height:19px;
+      stroke:currentColor;
+      fill:none;
+      stroke-width:1.7;
+      flex:0 0 auto;
+    }
+
+    .new-label{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      color:#5f7f43;
+      font-size:11px;
+      font-weight:700;
+      letter-spacing:.09em;
+    }
+
+    .new-label::before{
+      content:"";
+      width:6px;
+      height:6px;
+      border-radius:50%;
+      background:#8eae65;
+    }
+
+    .post-card h3{
+      margin:0 0 22px;
+      color:#18364D;
+      font-size:21px;
+      line-height:1.32;
+      font-weight:600;
+      letter-spacing:-.01em;
+      min-height:56px;
+    }
+
+    .post-image{
+      margin:0 -24px;
+      height:145px;
+      overflow:hidden;
+      background:#eef3f6;
+      border-top:1px solid #e2e9ed;
+      border-bottom:1px solid #e2e9ed;
+    }
+
+    .post-image.placeholder{
+      display:grid;
+      place-items:center;
+      background:#f4f7f9;
+      color:#81909b;
+    }
+
+    .placeholder-inner{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:9px;
+      font-size:13px;
+      font-weight:500;
+      letter-spacing:.04em;
+    }
+
+    .placeholder-inner svg{
+      width:30px;
+      height:30px;
+      stroke:#8fa0ab;
+      fill:none;
+      stroke-width:1.5;
+    }
+
+    .post-image img{
+      width:100%;height:100%;display:block;object-fit:cover;
+      transition:transform .35s ease;
+    }
+    .post-card:hover .post-image img{transform:scale(1.025)}
+
+    .post-meta{
+      margin-top:0;
+      padding-top:17px;
+      color:#6a7884;
+      font-size:12px;
+      font-weight:500;
+      letter-spacing:.015em;
+    }
+
+    .post-read{
+      margin-top:15px;
+      padding-top:15px;
+      border-top:1px solid #e4eaee;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      color:#34434D;
+      font-size:12px;
+      font-weight:500;
+      letter-spacing:.055em;
+    }
+
+    .post-read span:last-child{
+      color:var(--accent);
+      font-size:17px;
+      transition:transform .2s ease;
+    }
+
+    .post-card:hover .post-read span:last-child{
+      transform:translateX(3px);
+    }
+
+
+    /* SECTION 03 — FROM QUESTIONS TO PROPOSALS */
+    .proposal-section{
+      padding:92px 0 100px;
+      background:#fff;
+      border-top:1px solid #e5ebef;
+    }
+    .proposal-inner{
+      width:min(var(--max),calc(100% - 96px));
+      margin:0 auto;
+    }
+    .proposal-head{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap:28px;
+      margin-bottom:30px;
+    }
+    .proposal-head h2{
+      margin:0;
+      color:var(--navy);
+      font-size:31px;
+      line-height:1.15;
+      font-weight:700;
+      letter-spacing:.025em;
+    }
+    .proposal-kicker{
+      margin:0 0 7px;
+      color:#6d7d89;
+      font-size:12px;
+      font-weight:500;
+      letter-spacing:.11em;
+      text-transform:uppercase;
+    }
+    .proposal-tabs{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-bottom:28px;
+      border-bottom:1px solid #dfe7eb;
+    }
+    .proposal-tab{
+      appearance:none;
+      border:0;
+      background:transparent;
+      color:#667783;
+      padding:13px 17px 12px;
+      margin:0 0 -1px;
+      border-bottom:2px solid transparent;
+      font:inherit;
+      font-size:12px;
+      font-weight:500;
+      letter-spacing:.055em;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+    .proposal-tab:hover{color:var(--navy)}
+    .proposal-tab.active{
+      color:var(--navy);
+      border-bottom-color:#6f9876;
+    }
+    .proposal-panel{display:none}
+    .proposal-panel.active{display:block}
+    .proposal-list{
+      border-top:1px solid #dfe7eb;
+    }
+    .proposal-item{
+      display:grid;
+      grid-template-columns:74px 1fr auto;
+      gap:24px;
+      align-items:center;
+      min-height:112px;
+      padding:22px 8px;
+      border-bottom:1px solid #dfe7eb;
+      transition:background .2s ease,padding .2s ease;
+    }
+    .proposal-item:hover{
+      background:#f8faf9;
+      padding-left:14px;
+      padding-right:14px;
+    }
+    .proposal-thumb{
+      width:58px;
+      height:58px;
+      border-radius:50%;
+      border:1px solid #cfdbe1;
+      background:#f4f7f9;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:3px;
+      color:#83939d;
+      overflow:hidden;
+      flex:0 0 auto;
+    }
+    .proposal-thumb svg{
+      width:18px;
+      height:18px;
+      stroke:#8497a2;
+      fill:none;
+      stroke-width:1.45;
+    }
+    .proposal-thumb span{
+      font-size:9px;
+      font-weight:500;
+      letter-spacing:.015em;
+      line-height:1;
+    }
+    .proposal-thumb img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .proposal-item h3{
+      margin:0 0 8px;
+      color:#18364d;
+      font-size:20px;
+      line-height:1.28;
+      font-weight:600;
+    }
+    .proposal-meta{
+      color:#788792;
+      font-size:12px;
+      font-weight:500;
+    }
+    .proposal-view{
+      color:#557861;
+      font-size:12px;
+      font-weight:500;
+      letter-spacing:.055em;
+      white-space:nowrap;
+    }
+    .proposal-view span{
+      display:inline-block;
+      margin-left:9px;
+      font-size:17px;
+      transition:transform .2s ease;
+    }
+    .proposal-item:hover .proposal-view span{transform:translateX(3px)}
+
+
+    /* Section 03 visual upgrade: single module box + tab buttons */
+    .proposal-shell{
+      background:#ffffff;
+      border:1px solid #d9e3e8;
+      border-radius:14px;
+      padding:34px 34px 28px;
+      box-shadow:0 8px 24px rgba(24,54,77,.045);
+    }
+
+    .proposal-head{
+      margin-bottom:24px;
+    }
+
+    .proposal-tabs{
+      display:grid;
+      grid-template-columns:repeat(3,minmax(0,1fr));
+      gap:10px;
+      margin:0 0 26px;
+      padding:0;
+      border-bottom:0;
+    }
+
+    .proposal-tab{
+      margin:0;
+      padding:14px 16px;
+      border:1px solid #ccd8df;
+      border-radius:9px;
+      background:#f7f9fb;
+      color:#657783;
+      font-size:12px;
+      font-weight:500;
+      letter-spacing:.04em;
+      text-align:center;
+      cursor:pointer;
+      transition:background .2s ease,border-color .2s ease,color .2s ease,transform .2s ease;
+    }
+
+    .proposal-tab:hover{
+      color:#18364D;
+      border-color:#aebdc6;
+      background:#ffffff;
+      transform:translateY(-1px);
+    }
+
+    .proposal-tab.active{
+      color:#ffffff;
+      background:#18364D;
+      border-color:#18364D;
+      box-shadow:0 4px 12px rgba(24,54,77,.12);
+    }
+
+    .proposal-list{
+      border-top:1px solid #dfe7eb;
+    }
+
+
+    /* SECTION 04 — ABOUT */
+    .about-section{
+      padding:96px 0 108px;
+      background:#f7f9fb;
+      border-top:1px solid #e4ebef;
+    }
+
+    .about-section-inner{
+      width:min(var(--max),calc(100% - 96px));
+      margin:0 auto;
+      display:grid;
+      grid-template-columns:minmax(0,.78fr) minmax(0,1.22fr);
+      gap:68px;
+      align-items:stretch;
+    }
+
+    .about-profile{
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      min-height:0;
+    }
+
+    .about-eyebrow{
+      margin:0 0 10px;
+      color:#6d7d89;
+      font-size:12px;
+      font-weight:500;
+      letter-spacing:.12em;
+      text-transform:uppercase;
+    }
+
+    .about-profile h2{
+      margin:0 0 24px;
+      color:#18364D;
+      font-size:36px;
+      line-height:1.12;
+      font-weight:700;
+      letter-spacing:.015em;
+    }
+
+    .about-name{
+      margin:0 0 7px;
+      color:#18364D;
+      font-size:21px;
+      font-weight:600;
+    }
+
+    .about-role{
+      margin:0 0 26px;
+      color:#5f717d;
+      font-size:14px;
+      font-weight:500;
+    }
+
+    .about-focus{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .about-focus span{
+      display:inline-flex;
+      padding:7px 10px;
+      border:1px solid transparent;
+      border-radius:7px;
+      font-size:11px;
+      font-weight:500;
+      line-height:1.2;
+    }
+
+    .about-focus span:nth-child(1){background:#eef5fb;border-color:#cfe0ee;color:#3f7194;}
+    .about-focus span:nth-child(2){background:#eff6f2;border-color:#cfe3d8;color:#4e7d65;}
+    .about-focus span:nth-child(3){background:#f3f1fa;border-color:#ddd8ef;color:#6d6599;}
+    .about-focus span:nth-child(4){background:#f3f7ed;border-color:#dbe7ca;color:#70864f;}
+    .about-focus span:nth-child(5){background:#eef6f7;border-color:#cee4e5;color:#4d7b7f;}
+    .about-focus span:nth-child(6){background:#f7f3ef;border-color:#e8ddd1;color:#826e59;}
+
+    .about-photo{
+      margin-top:28px;
+      width:100%;
+      max-width:360px;
+      aspect-ratio:5/4;
+      flex:0 1 auto;
+      max-height:100%;
+      border:1px solid #d6e0e6;
+      border-radius:12px;
+      background:#f1f5f7;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+    }
+
+    .about-photo-placeholder{
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      color:#8797a2;
+      text-align:center;
+      font-size:12px;
+      font-weight:500;
+      letter-spacing:.02em;
+    }
+
+    .about-photo-placeholder svg{
+      width:42px;
+      height:42px;
+      stroke:#8ea0ab;
+      fill:none;
+      stroke-width:1.5;
+    }
+
+    .about-photo img{
+      width:100%;
+      height:100%;
+      display:block;
+      object-fit:cover;
+    }
+
+    .about-story{
+      background:#fff;
+      border:1px solid #d9e3e8;
+      border-radius:12px;
+      padding:38px 42px 40px;
+    }
+
+    .about-story .lead{
+      margin:0 0 25px;
+      color:#18364D;
+      font-size:22px;
+      line-height:1.5;
+      font-weight:500;
+    }
+
+    .about-story p{
+      margin:0 0 20px;
+      color:#425764;
+      font-size:16px;
+      line-height:1.72;
+      font-weight:400;
+    }
+
+    .about-story p:last-child{margin-bottom:0}
+
+    .about-principle{
+      margin-top:30px;
+      padding-top:25px;
+      border-top:1px solid #e1e8ec;
+      color:#5f8068;
+      font-size:13px;
+      font-weight:600;
+      letter-spacing:.07em;
+    }
+
+
+    /* FOOTER BANNER */
+    .footer-visual{
+      width:100%;
+      background:#1e2d41;
+      overflow:hidden;
+      border-top:1px solid rgba(255,255,255,.08);
+    }
+
+    .footer-visual img{
+      display:block;
+      width:100%;
+      height:auto;
+      object-fit:cover;
+    }
+
+
+
+    /* SECTION 04 BOTTOM QUOTE BANNER — centered quote + molecular flow */
+    .quote-banner{
+      margin-top:54px;
+      background:linear-gradient(90deg,#1e2d41 0%,#22334a 100%);
+      color:#d8dee5;
+      min-height:190px;
+      overflow:hidden;
+      position:relative;
+    }
+
+    .quote-banner-inner{
+      width:min(var(--max),calc(100% - 96px));
+      margin:0 auto;
+      min-height:190px;
+      position:relative;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:34px 120px;
+    }
+
+    .quote-copy{
+      position:relative;
+      z-index:2;
+      max-width:860px;
+      margin:0 auto;
+      padding-top:2px;
+    }
+
+    .quote-mark{
+      color:#6d8e79;
+      font-size:132px;
+      line-height:.55;
+      font-family:Georgia, "Times New Roman", serif;
+      margin-bottom:4px;
+    }
+
+    .quote-text{
+      margin:0;
+      font-family:Georgia, "Times New Roman", serif;
+      font-size:25px;
+      line-height:1.55;
+      font-style:italic;
+      font-weight:400;
+      letter-spacing:.003em;
+      color:#d8dee5;
+    }
+
+    .quote-molecules{
+      position:absolute;
+      inset:0;
+      z-index:1;
+      pointer-events:none;
+      overflow:hidden;
+    }
+
+    .quote-molecules img{
+      width:100%;
+      height:100%;
+      display:block;
+      object-fit:cover;
+      object-position:center;
+      opacity:.70;
+    }
+    @media (max-width:900px){
+      .quote-banner-inner{
+        padding:30px 56px;
+      }
+      .quote-mark{font-size:108px}
+      .quote-text{font-size:21px}
+    }
+
+    @media (max-width:600px){
+      .quote-banner-inner{
+        width:calc(100% - 40px);
+        padding:28px 12px;
+      }
+      .quote-mark{font-size:88px}
+      .quote-text{font-size:18px}
+    }
+
+
+    @media (min-width:1400px){
+      .hero::after{
+        background-size:auto 104%;
+        background-position:right 46%;
+      }
+    }
+
+    @media (max-width:1100px){
+      .main-grid{grid-template-columns:1fr 1fr}
+      .post-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .proposal-item{grid-template-columns:68px 1fr auto}
+      .about-section-inner{grid-template-columns:1fr;gap:34px}
+      .about-profile{position:static;display:block}
+      .about-photo{aspect-ratio:5/4;max-height:none;min-height:0}
+      .journey{grid-column:1/-1;order:-1}
+      .hero h1{font-size:48px}
+      nav ul{gap:28px}
+    }
+
+    @media (max-width:760px){
+      .topbar{height:auto;padding:16px 0}
+      .nav-wrap{width:calc(100% - 32px);align-items:flex-start}
+      .brand{min-width:0}
+      .brand-text{font-size:14px}
+      nav ul{display:none}
+      .hero{min-height:auto}
+      .hero::after{
+        inset:0;
+        background-size:auto 100%;
+        background-position:72% center;
+        opacity:.34;
+      }
+      .hero::before{
+        background:linear-gradient(90deg,rgba(255,255,255,.94) 0%,rgba(255,255,255,.84) 60%,rgba(255,255,255,.52) 100%);
+      }
+      .hero-inner{width:calc(100% - 40px);padding:64px 0}
+      .hero h1{font-size:40px;max-width:100%}
+      .hero-copy{font-size:20px;max-width:100%}
+      .main-grid{width:calc(100% - 32px);grid-template-columns:1fr}
+      .latest-inner{width:calc(100% - 40px)}
+      .latest-section{padding:64px 0 72px}
+      .latest-head{align-items:flex-start}
+      .latest-head h2{font-size:27px}
+      .post-grid{grid-template-columns:1fr}
+      .proposal-inner{width:calc(100% - 40px)}
+      .proposal-section{padding:68px 0 76px}
+      .proposal-head h2{font-size:27px}
+      .proposal-item{grid-template-columns:62px 1fr;gap:14px;padding:20px 4px}
+      .proposal-view{grid-column:2}
+      .proposal-tabs{grid-template-columns:1fr;overflow:visible}
+      .about-section-inner{width:calc(100% - 40px)}
+      .about-section{padding:68px 0 78px}
+      .about-profile h2{font-size:30px}
+      .about-story{padding:28px 24px 30px}
+      .about-story .lead{font-size:20px}
+      .proposal-shell{padding:24px 20px 22px;border-radius:12px}
+      .proposal-tab{white-space:nowrap}
+      .journey,.dark-card{min-height:auto}
+      .timeline{grid-template-columns:1fr 1fr;row-gap:30px}
+      .timeline::before{display:none}
+    }
+
+    @media (max-width:480px){
+      .timeline{grid-template-columns:1fr}
+      .hero h1{font-size:34px}
+      .hero-copy{font-size:18px}
+      .main-bottom-banner{letter-spacing:.18em}
+    }
+  </style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="nav-wrap">
+    <a href="#" class="brand" aria-label="Young Bio-Scholar's Research Archive">
+      <svg class="brand-mark" viewBox="0 0 40 52" aria-hidden="true">
+        <path d="M9 4c15 8 7 17 22 25M31 4C16 12 24 21 9 29M11 9h16M10 16h18M12 23h15M12 30h16M10 37h18M12 44h15"
+              stroke="#ffffff" fill="none" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+      <div class="brand-text">
+        <span>YOUNG BIO-SCHOLAR’S</span>
+        <span>RESEARCH ARCHIVE</span>
+      </div>
+    </a>
+
+    <nav aria-label="Primary">
+      <ul>
+        <li><a class="active" href="#">HOME</a></li>
+        <li><a href="archive.html">ARCHIVE</a></li>
+        <li><a href="#proposals">PROPOSALS</a></li>
+        <li><a href="#about-section">ABOUT</a></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="hero-inner">
+      <h1>
+        YOUNG BIO-SCHOLAR’S<br>
+        <span class="green">RESEARCH ARCHIVE</span>
+      </h1>
+
+      <p class="hero-copy">
+        I’m just a student who loves biology.<br>
+        This is where I record my curiosity,<br>
+        my questions and the ideas I want to explore
+      </p>
+    </div>
+  </section>
+
+  <section class="main-grid">
+    <article class="dark-card" id="about">
+      <h3>ABOUT THIS ARCHIVE</h3>
+      <div class="about-copy">
+        <p>
+          This archive documents my 4-year journey of exploring biology
+          through reading, questioning, connecting ideas, and developing
+          original research proposals.
+        </p>
+        <p>
+          From Grade 9 curiosity to Grade 12 independent inquiry,
+          this is the evolution of my questions.
+        </p>
+      </div>
+      <a class="more-btn" href="#about-section">
+        <span>MORE</span><span>→</span>
+      </a>
+    </article>
+
+    <section class="journey" aria-labelledby="journey-title">
+      <h3 id="journey-title">RESEARCH JOURNEY</h3>
+      <div class="timeline">
+        <article class="stage g9">
+          <div class="icon-circle">
+            <svg viewBox="0 0 40 40"><path d="M20 32V18M20 20c-8 0-10-6-10-10 6 0 10 3 10 10Zm0 0c7 0 10-5 10-10-6 0-10 3-10 10ZM15 32h10"/></svg>
+          </div>
+          <div class="grade">2023</div>
+          <div class="stage-name">FOUNDATIONS</div>
+          <p>Building foundational knowledge and developing pure curiosity about life.</p>
+        </article>
+
+        <article class="stage g10">
+          <div class="icon-circle">
+            <svg viewBox="0 0 40 40"><circle cx="17" cy="17" r="10"/><path d="m24.5 24.5 8 8"/></svg>
+          </div>
+          <div class="grade">2024</div>
+          <div class="stage-name">EXPLORATION</div>
+          <p>Connecting biology to disease, technology, and real-world applications.</p>
+        </article>
+
+        <article class="stage g11">
+          <div class="icon-circle">
+            <svg viewBox="0 0 40 40"><path d="M8 5h20l5 5v25H8z"/><path d="M28 5v7h6M12 28l5-5 4 3 7-9M12 31h17"/></svg>
+          </div>
+          <div class="grade">2025</div>
+          <div class="stage-name">ANALYSIS</div>
+          <p>Reading scientific papers critically and analyzing evidence.</p>
+        </article>
+
+        <article class="stage g12">
+          <div class="icon-circle">
+            <svg viewBox="0 0 40 40"><path d="M14 5h12M18 5v12l-7 12c-2 3 0 6 4 6h10c4 0 6-3 4-6l-7-12V5M14 25h12"/></svg>
+          </div>
+          <div class="grade">2026</div>
+          <div class="stage-name">INDEPENDENT INQUIRY</div>
+          <p>Developing original questions, hypotheses, and research proposals.</p>
+        </article>
+      </div>
+    </section>
+
+    <aside class="dark-card numbers" id="archive">
+      <h3>EXPLORE THE ARCHIVE</h3>
+
+      <a class="stat" href="#archive-year">
+        <div class="stat-icon">
+          <svg viewBox="0 0 40 40"><path d="M9 8h22v24H9zM14 5v7M26 5v7M9 15h22M14 20h4M22 20h4M14 26h4M22 26h4"/></svg>
+        </div>
+        <div class="stat-label">BY YEAR</div>
+      </a>
+
+      <a class="stat" href="#archive-content-type">
+        <div class="stat-icon">
+          <svg viewBox="0 0 40 40"><path d="M10 7h14l6 6v20H10zM24 7v7h7M15 20h10M15 25h10M15 30h7"/></svg>
+        </div>
+        <div class="stat-label">BY CONTENT TYPE</div>
+      </a>
+
+      <a class="stat" href="#archive-theme">
+        <div class="stat-icon">
+          <svg viewBox="0 0 40 40"><circle cx="20" cy="20" r="4"/><circle cx="20" cy="20" r="12"/><path d="M20 4v6M20 30v6M4 20h6M30 20h6M9 9l4 4M27 27l4 4M31 9l-4 4M13 27l-4 4"/></svg>
+        </div>
+        <div class="stat-label">BY RESEARCH THEME</div>
+      </a>
+
+      <a class="stat" href="#archive-question">
+        <div class="stat-icon">
+          <svg viewBox="0 0 40 40" aria-hidden="true">
+            <path d="M5.5 7.5 Q5.5 5.5 7.5 5.5 H32.5 Q34.5 5.5 34.5 7.5 V29.5 Q34.5 31.5 32.5 31.5 H18.5 L10 37 V31.5 H7.5 Q5.5 31.5 5.5 29.5 Z" stroke-linejoin="round"/>
+            <path d="M15 15.5c0-3.2 2.4-5.4 5.8-5.4 3.3 0 5.7 2 5.7 5 0 3.4-2.7 4.4-4.4 5.7-1.1.8-1.5 1.7-1.5 3.1"/>
+            <circle cx="20.6" cy="27.2" r="1.15" fill="currentColor" stroke="none"/>
+          </svg>
+        </div>
+        <div class="stat-label">BY RESEARCH QUESTION</div>
+      </a>
+    </aside>
+  </section>
+
+  
+
+  <div class="main-bottom-banner" aria-label="Archive principle">
+    ARCHIVE × TIME × QUESTION × DEPTH
+  </div>
+
+  <section class="latest-section" id="latest-archive">
+    <div class="latest-inner">
+      <div class="latest-head">
+        <h2>LATEST FROM THE ARCHIVE</h2>
+        <a class="view-all" href="archive.html">VIEW ALL ARCHIVE →</a>
+      </div>
+
+      <div class="post-grid">
+        <a class="post-card review" href="#">
+          <div class="post-top">
+            <div class="post-type">
+              <svg viewBox="0 0 24 24"><path d="M6 3h8l4 4v14H6zM14 3v5h5M9 12h6M9 16h6"/></svg>
+              <span>Paper Review</span>
+            </div>
+          </div>
+          <h3>Clinical CRISPR for Sickle Cell Disease</h3>
+          <div class="post-image"><img src="section2-images/post-crispr.webp" alt=""></div>
+          <div class="post-meta">2026 · Gene Editing</div>
+          <div class="post-read"><span>READ ENTRY</span><span>→</span></div>
+        </a>
+
+        <a class="post-card analysis" href="#">
+          <div class="post-top">
+            <div class="post-type">
+              <svg viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M3 19h18"/></svg>
+              <span>Critical Analysis</span>
+            </div>
+          </div>
+          <h3>Clinical Benefit vs. Editing Risk</h3>
+          <div class="post-image placeholder" aria-label="Representative image preparing">
+            <div class="placeholder-inner">
+              <svg viewBox="0 0 40 40" aria-hidden="true">
+                <rect x="7" y="8" width="26" height="24" rx="2"/>
+                <path d="M11 27l7-7 5 5 4-4 6 6"/>
+                <circle cx="26" cy="15" r="2.5"/>
+              </svg>
+              <span>준비중</span>
+            </div>
+          </div>
+          <div class="post-meta">2026 · Gene Editing</div>
+          <div class="post-read"><span>READ ENTRY</span><span>→</span></div>
+        </a>
+
+        <a class="post-card question" href="#">
+          <div class="post-top">
+            <div class="post-type">
+              <svg viewBox="0 0 24 24">
+                <path d="M3.5 4.5h17v13h-8l-5 3v-3h-4z" stroke-linejoin="round"/>
+                <path d="M8.5 9c0-2 1.5-3.4 3.6-3.4 2.1 0 3.6 1.3 3.6 3.2 0 2.1-1.7 2.8-2.8 3.6-.7.5-.9 1.1-.9 1.9"/>
+                <circle cx="12" cy="16.1" r=".75" fill="currentColor" stroke="none"/>
+              </svg>
+              <span>Research Question</span>
+            </div>
+          </div>
+          <h3>Can Gene Editing Become Safer and More Precise?</h3>
+          <div class="post-image placeholder" aria-label="Representative image preparing">
+            <div class="placeholder-inner">
+              <svg viewBox="0 0 40 40" aria-hidden="true">
+                <rect x="7" y="8" width="26" height="24" rx="2"/>
+                <path d="M11 27l7-7 5 5 4-4 6 6"/>
+                <circle cx="26" cy="15" r="2.5"/>
+              </svg>
+              <span>준비중</span>
+            </div>
+          </div>
+          <div class="post-meta">2026 · Gene Editing</div>
+          <div class="post-read"><span>READ ENTRY</span><span>→</span></div>
+        </a>
+
+        <a class="post-card latest" href="#">
+          <div class="post-top">
+            <div class="post-type">
+              <svg viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/></svg>
+              <span>Latest Entry</span>
+            </div>
+            <span class="new-label">NEW</span>
+          </div>
+          <h3>Most Recent Archive Entry</h3>
+          <div class="post-image placeholder" aria-label="Representative image preparing">
+            <div class="placeholder-inner">
+              <svg viewBox="0 0 40 40" aria-hidden="true">
+                <rect x="7" y="8" width="26" height="24" rx="2"/>
+                <path d="M11 27l7-7 5 5 4-4 6 6"/>
+                <circle cx="26" cy="15" r="2.5"/>
+              </svg>
+              <span>준비중</span>
+            </div>
+          </div>
+          <div class="post-meta">Automatically updated · Latest post</div>
+          <div class="post-read"><span>READ ENTRY</span><span>→</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="proposal-section" id="proposals">
+    <div class="proposal-inner">
+      <div class="proposal-shell">
+      <div class="proposal-head">
+        <div>
+          <p class="proposal-kicker">Independent Inquiry</p>
+          <h2>FROM QUESTIONS TO PROPOSALS</h2>
+        </div>
+      </div>
+
+      <div class="proposal-tabs" role="tablist" aria-label="Proposal categories">
+        <button class="proposal-tab" type="button" role="tab" aria-selected="false" data-panel="questions">RESEARCH QUESTIONS</button>
+        <button class="proposal-tab" type="button" role="tab" aria-selected="false" data-panel="hypotheses">HYPOTHESIS NOTES</button>
+        <button class="proposal-tab active" type="button" role="tab" aria-selected="true" data-panel="research-proposals">RESEARCH PROPOSALS</button>
+      </div>
+
+      <div class="proposal-panel" id="questions" role="tabpanel">
+        <div class="proposal-list">
+          <a class="proposal-item" href="#"><div class="proposal-thumb" aria-label="Representative image preparing">
+  <svg viewBox="0 0 40 40" aria-hidden="true">
+    <rect x="8" y="9" width="24" height="22" rx="2"/>
+    <path d="M11 27l6-6 5 5 4-4 6 6"/>
+    <circle cx="25.5" cy="15.5" r="2.3"/>
+  </svg>
+  <span>준비중</span>
+</div><div><h3>Can Gene Editing Become Safer and More Precise?</h3><div class="proposal-meta">2026 · Gene Editing</div></div><div class="proposal-view">VIEW <span>→</span></div></a>
+          <a class="proposal-item" href="#"><div class="proposal-thumb" aria-label="Representative image preparing">
+  <svg viewBox="0 0 40 40" aria-hidden="true">
+    <rect x="8" y="9" width="24" height="22" rx="2"/>
+    <path d="M11 27l6-6 5 5 4-4 6 6"/>
+    <circle cx="25.5" cy="15.5" r="2.3"/>
+  </svg>
+  <span>준비중</span>
+</div><div><h3>Can Cells Be Programmed Like Biological Circuits?</h3><div class="proposal-meta">2026 · Synthetic Biology</div></div><div class="proposal-view">VIEW <span>→</span></div></a>
+          <a class="proposal-item" href="#"><div class="proposal-thumb" aria-label="Representative image preparing">
+  <svg viewBox="0 0 40 40" aria-hidden="true">
+    <rect x="8" y="9" width="24" height="22" rx="2"/>
+    <path d="M11 27l6-6 5 5 4-4 6 6"/>
+    <circle cx="25.5" cy="15.5" r="2.3"/>
+  </svg>
+  <span>준비중</span>
+</div><div><h3>Can Rare Cell Populations Predict Disease?</h3><div class="proposal-meta">2026 · Single-Cell Biology</div></div><div class="proposal-view">VIEW <span>→</span></div></a>
+          <a class="proposal-item" href="#"><div class="proposal-thumb" aria-label="Representative image preparing">
+  <svg viewBox="0 0 40 40" aria-hidden="true">
+    <rect x="8" y="9" width="24" height="22" rx="2"/>
+    <path d="M11 27l6-6 5 5 4-4 6 6"/>
+    <circle cx="25.5" cy="15.5" r="2.3"/>
+  </svg>
+  <span>준비중</span>
+</div><div><h3>Prediction vs. Biological Validation</h3><div class="proposal-meta">2026 · Computational Biology</div></div><div class="proposal-view">VIEW <span>→</span></div></a>
+        </div>
+      </div>
+
+      <div class="proposal-panel" id="hypotheses" role="tabpanel">
+        <div class="proposal-list">
+          <a class="proposal-item" href="#"><div class="proposal-thumb" aria-label="Representative image preparing">
+  <svg viewBox="0 0 40 40" aria-hidden="true">
+    <rect x="8" y="9" width="24" height="22" rx="2"/>
+    <path d="M11 27l6-6 5 5 4-4 6 6"/>
+    <circle cx="25.5" cy="15.5" r="2.3"/>
+  </svg>
+  <span>준비중</span>
+</div><div><h3>Improving Target Specificity</h3><div class="proposal-meta">2026 · Gene Editing</div></div><div class="proposal-view">VIEW <span>→</span></div></a>
+          <a class="proposal-item" href="#"><div class="proposal-thumb" aria-label="Representative image preparing">
+  <svg viewBox="0 0 40 40" aria-hidden="true">
+    <rect x="8" y="9" width="24" height="22" rx="2"/>
+    <path d="M11 27l6-6 5 5 4-4 6 6"/>
+    <circle cx="25.5" cy="15.5" r="2.3"/>
+  </svg>
+  <span>준비중</span>
+</div><div><h3>Improving Tumor Recognition</h3><div class="proposal-meta">2026 · Cancer &amp; Immunology</div></div><div class="proposal-view">VIEW <span>→</span></div></a>
+        </div>
+      </div>
+
+      <div class="proposal-panel active" id="research-proposals" role="tabpanel">
+        <div class="proposal-list">
+          <a class="proposal-item" href="#"><div class="proposal-thumb" aria-label="Representative image preparing">
+  <svg viewBox="0 0 40 40" aria-hidden="true">
+    <rect x="8" y="9" width="24" height="22" rx="2"/>
+    <path d="M11 27l6-6 5 5 4-4 6 6"/>
+    <circle cx="25.5" cy="15.5" r="2.3"/>
+  </svg>
+  <span>준비중</span>
+</div><div><h3>A More Selective Engineered Immune Cell</h3><div class="proposal-meta">2026 · Cancer &amp; Immunology</div></div><div class="proposal-view">VIEW <span>→</span></div></a>
+          <a class="proposal-item" href="#"><div class="proposal-thumb" aria-label="Representative image preparing">
+  <svg viewBox="0 0 40 40" aria-hidden="true">
+    <rect x="8" y="9" width="24" height="22" rx="2"/>
+    <path d="M11 27l6-6 5 5 4-4 6 6"/>
+    <circle cx="25.5" cy="15.5" r="2.3"/>
+  </svg>
+  <span>준비중</span>
+</div><div><h3>Using Organoids to Compare Therapeutic Responses</h3><div class="proposal-meta">2026 · Bioengineering</div></div><div class="proposal-view">VIEW <span>→</span></div></a>
+          <a class="proposal-item" href="#"><div class="proposal-thumb" aria-label="Representative image preparing">
+  <svg viewBox="0 0 40 40" aria-hidden="true">
+    <rect x="8" y="9" width="24" height="22" rx="2"/>
+    <path d="M11 27l6-6 5 5 4-4 6 6"/>
+    <circle cx="25.5" cy="15.5" r="2.3"/>
+  </svg>
+  <span>준비중</span>
+</div><div><h3>Identifying Disease-Relevant Cell Populations</h3><div class="proposal-meta">2026 · Single-Cell Biology</div></div><div class="proposal-view">VIEW <span>→</span></div></a>
+          <a class="proposal-item" href="#"><div class="proposal-thumb" aria-label="Representative image preparing">
+  <svg viewBox="0 0 40 40" aria-hidden="true">
+    <rect x="8" y="9" width="24" height="22" rx="2"/>
+    <path d="M11 27l6-6 5 5 4-4 6 6"/>
+    <circle cx="25.5" cy="15.5" r="2.3"/>
+  </svg>
+  <span>준비중</span>
+</div><div><h3>Testing a Microbiome–Immune Hypothesis</h3><div class="proposal-meta">2026 · Microbiome &amp; Immunology</div></div><div class="proposal-view">VIEW <span>→</span></div></a>
+        </div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+
+  <section class="about-section" id="about-section">
+    <div class="about-section-inner">
+      <div class="about-profile">
+        <p class="about-eyebrow">About</p>
+        <h2>ABOUT THIS ARCHIVE</h2>
+        <p class="about-name">Jiyoon Lim</p>
+        <p class="about-role">Student Research Archive · Biology</p>
+
+        <div class="about-focus" aria-label="Research interests">
+          <span>#Biomedical Science</span>
+          <span>#Molecular &amp; Cellular Biology</span>
+          <span>#Genetics &amp; Genomics</span>
+          <span>#Biotechnology</span>
+          <span>#Immunology</span>
+          <span>#Infectious Disease</span>
+        </div>
+
+        <div class="about-photo" aria-label="Student photo preparing">
+          <div class="about-photo-placeholder">
+            <svg viewBox="0 0 48 48" aria-hidden="true">
+              <circle cx="24" cy="17" r="7"/>
+              <path d="M11 39c2-8 7-12 13-12s11 4 13 12"/>
+              <rect x="5" y="5" width="38" height="38" rx="4"/>
+            </svg>
+            <span>학생 사진 준비중</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="about-story">
+        <p class="lead">
+          I am a student who has continued to explore biology by reading,
+          asking questions, and connecting ideas across different areas of research.
+        </p>
+
+        <p>
+          This archive began as a way to keep track of what I was learning.
+          From Grade 9 foundations to Grade 12 independent inquiry, my notes gradually
+          developed from basic concepts and curiosity into paper reviews, critical analysis,
+          research questions, hypothesis notes, and research proposals.
+        </p>
+
+        <p>
+          My interests include biomedical science, molecular and cellular biology,
+          genetics and genomics, biotechnology, immunology, and infectious disease.
+          Rather than simply collecting biological information, I use this archive to follow
+          how one question leads to another and how evidence can change the way I think.
+        </p>
+
+        <p>
+          The goal is to document the process of learning itself — what I read,
+          what I questioned, what I connected, and which ideas I would like to investigate further.
+        </p>
+
+        <div class="about-principle">READ · QUESTION · CONNECT · PROPOSE</div>
+      </div>
+    </div>
+  
+      <div class="quote-banner" aria-label="Science quote">
+        <div class="quote-banner-inner">
+          <div class="quote-molecules" aria-hidden="true">
+            <img src="quote-assets/molecule-flow.webp" alt="">
+          </div>
+
+          <div class="quote-copy">
+            <div class="quote-mark">“</div>
+            <p class="quote-text">
+              The goal of science is not to know everything,<br>
+              but to keep asking better questions.
+            </p>
+          </div>
+        </div>
+      </div>
+
+  </section>
+
+</main>
+
+
+
+
+<!-- The actual site footer will be designed and added separately. -->
+
+
+<script>
+  document.querySelectorAll('.proposal-tab').forEach(function(tab){
+    tab.addEventListener('click', function(){
+      document.querySelectorAll('.proposal-tab').forEach(function(t){
+        t.classList.remove('active');
+        t.setAttribute('aria-selected','false');
+      });
+      document.querySelectorAll('.proposal-panel').forEach(function(panel){
+        panel.classList.remove('active');
+      });
+      tab.classList.add('active');
+      tab.setAttribute('aria-selected','true');
+      document.getElementById(tab.dataset.panel).classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
