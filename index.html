@@ -104,14 +104,7 @@
       min-height:500px;
       position:relative;
       overflow:hidden;
-      background:
-        linear-gradient(90deg,
-          #fff 0%,
-          #fff 36%,
-          rgba(246,249,252,.96) 45%,
-          rgba(235,244,250,.76) 56%,
-          rgba(222,239,249,.18) 69%,
-          rgba(222,239,249,0) 100%);
+      background:#d4e2f2;
     }
 
     .hero::after{
@@ -132,15 +125,47 @@
       inset:0;
       background:
         linear-gradient(90deg,
-          rgba(255,255,255,1) 0%,
-          rgba(255,255,255,.99) 31%,
-          rgba(255,255,255,.94) 40%,
-          rgba(255,255,255,.72) 48%,
-          rgba(255,255,255,.30) 58%,
-          rgba(255,255,255,.06) 67%,
-          rgba(255,255,255,0) 76%);
+          rgba(212,226,242,1) 0%,
+          rgba(212,226,242,1) 31%,
+          rgba(212,226,242,.96) 40%,
+          rgba(212,226,242,.74) 48%,
+          rgba(212,226,242,.32) 58%,
+          rgba(212,226,242,.07) 67%,
+          rgba(212,226,242,0) 76%);
       pointer-events:none;
     }
+
+    .back-to-top{
+      position:fixed;
+      right:28px;
+      bottom:28px;
+      z-index:1000;
+      width:46px;
+      height:46px;
+      padding:0;
+      border:0;
+      border-radius:50%;
+      background:#0d284e;
+      color:#fff;
+      display:grid;
+      place-items:center;
+      cursor:pointer;
+      box-shadow:0 5px 16px rgba(13,40,78,.22);
+      opacity:0;
+      visibility:hidden;
+      transform:translateY(10px);
+      transition:opacity .2s ease,transform .2s ease,visibility .2s ease,background-color .2s ease;
+    }
+
+    .back-to-top.is-visible{
+      opacity:1;
+      visibility:visible;
+      transform:translateY(0);
+    }
+
+    .back-to-top:hover{background:#173b6c}
+    .back-to-top:focus-visible{outline:3px solid #9fc5e8;outline-offset:3px}
+    .back-to-top svg{width:17px;height:17px;display:block}
 
     .hero-inner{
       position:relative;
@@ -1025,7 +1050,7 @@
         opacity:.34;
       }
       .hero::before{
-        background:linear-gradient(90deg,rgba(255,255,255,.94) 0%,rgba(255,255,255,.84) 60%,rgba(255,255,255,.52) 100%);
+        background:linear-gradient(90deg,rgba(212,226,242,.96) 0%,rgba(212,226,242,.86) 60%,rgba(212,226,242,.54) 100%);
       }
       .hero-inner{width:calc(100% - 40px);padding:64px 0}
       .hero h1{font-size:40px;max-width:100%}
@@ -1059,6 +1084,7 @@
       .hero h1{font-size:34px}
       .hero-copy{font-size:18px}
       .main-bottom-banner{letter-spacing:.18em}
+      .back-to-top{right:18px;bottom:18px;width:44px;height:44px}
     }
   </style>
 </head>
@@ -1496,6 +1522,12 @@
 
 </main>
 
+<button class="back-to-top" type="button" aria-label="Back to top" title="Back to top">
+  <svg viewBox="0 0 24 24" aria-hidden="true">
+    <path d="M6.5 14.5 12 9l5.5 5.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+</button>
+
 
 
 
@@ -1503,6 +1535,19 @@
 
 
 <script>
+  const backToTopButton = document.querySelector('.back-to-top');
+
+  function updateBackToTopButton(){
+    backToTopButton.classList.toggle('is-visible', window.scrollY > 420);
+  }
+
+  window.addEventListener('scroll', updateBackToTopButton, {passive:true});
+  updateBackToTopButton();
+
+  backToTopButton.addEventListener('click', function(){
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+
   document.querySelectorAll('.proposal-tab').forEach(function(tab){
     tab.addEventListener('click', function(){
       document.querySelectorAll('.proposal-tab').forEach(function(t){
