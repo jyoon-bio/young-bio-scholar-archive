@@ -2,9 +2,12 @@
   'use strict';
 
   const API_URL = 'https://script.google.com/macros/s/AKfycbwiZsgp3l-qoRFRDM0iwQwcONKoIyenzNhCHdbx0fBI41F6q1_NBum17fccVgPa5Lpx/exec';
+  const CACHE_KEY = 'young-bio-archive-cms-v1';
+  const CACHE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
   const state = {
     posts: [],
     settings: { postsPerListPage: 10 },
+    generatedAt: '',
     selectedYear: 'all',
     selectedType: 'all',
     selectedTheme: 'all',
@@ -276,26 +279,59 @@
     return new URLSearchParams(location.search).get('slug') || '';
   }
 
-  async function loadCms() {
-    showLoading();
+  function readCmsCache() {
     try {
-      const response = await fetch(API_URL, { method: 'GET', redirect: 'follow' });
+      const cached = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
+      if (!cached?.savedAt || !cached?.payload?.ok) return null;
+      if (Date.now() - cached.savedAt > CACHE_MAX_AGE_MS) {
+        localStorage.removeItem(CACHE_KEY);
+        return null;
+      }
+      return cached.payload;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  function writeCmsCache(payload) {
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), payload }));
+    } catch (error) {
+      console.warn('CMS cache could not be saved.', error);
+    }
+  }
+
+  function applyPayload(payload) {
+    state.posts = Array.isArray(payload.posts) ? payload.posts : [];
+    state.settings = payload.settings || state.settings;
+    state.generatedAt = payload.generatedAt || '';
+    if (!state.posts.length) {
+      showEmpty();
+      return;
+    }
+
+    fillYearButtons();
+    fillSelect('#type-filter', availableValues('contentType'), 'All Types');
+    fillSelect('#theme-filter', availableValues('researchTheme'), 'All Themes');
+    renderList();
+    renderPost(requestedSlug() || state.posts[0].slug, false);
+  }
+
+  async function loadCms() {
+    const cachedPayload = readCmsCache();
+    if (cachedPayload) applyPayload(cachedPayload);
+    else showLoading();
+
+    try {
+      const response = await fetch(API_URL, { method: 'GET', redirect: 'follow', cache: 'no-store' });
       if (!response.ok) throw new Error(`API request failed (${response.status}).`);
       const payload = await response.json();
       if (!payload.ok) throw new Error(payload.message || payload.error || 'The CMS returned an error.');
-
-      state.posts = Array.isArray(payload.posts) ? payload.posts : [];
-      state.settings = payload.settings || state.settings;
-      if (!state.posts.length) return showEmpty();
-
-      fillYearButtons();
-      fillSelect('#type-filter', availableValues('contentType'), 'All Types');
-      fillSelect('#theme-filter', availableValues('researchTheme'), 'All Themes');
-      renderList();
-      renderPost(requestedSlug() || state.posts[0].slug, false);
+      writeCmsCache(payload);
+      if (!cachedPayload || payload.generatedAt !== state.generatedAt) applyPayload(payload);
     } catch (error) {
       console.error(error);
-      showError('Please check the CMS web-app deployment and try again.');
+      if (!cachedPayload) showError('Please check the CMS web-app deployment and try again.');
     }
   }
 
