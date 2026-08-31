@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const API_URL = 'https://script.google.com/macros/s/AKfycbwiZsgp3l-qoRFRDM0iwQwcONKoIyenzNhCHdbx0fBI41F6q1_NBum17fccVgPa5Lpx/exec';
+  const API_URL = '/api/archive';
   const CACHE_KEY = 'young-bio-archive-cms-v1';
   const CACHE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
   const state = {

@@ -1,4 +1,9 @@
 {
+  "functions": {
+    "api/archive.js": {
+      "maxDuration": 60
+    }
+  },
   "rewrites": [
     { "source": "/archive", "destination": "/archive.html" },
     { "source": "/archive/:slug", "destination": "/archive.html" }
