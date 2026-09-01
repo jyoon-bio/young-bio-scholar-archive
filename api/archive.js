@@ -35,6 +35,7 @@ module.exports = async function handler(request, response) {
         activityDate: post.activityDate,
         activityYear: post.activityYear,
         publishDate: post.publishDate,
+        cmsPublishedAt: post.cmsPublishedAt,
         researchTheme: post.researchTheme,
         authorNickname: post.authorNickname,
         authorLogoUrl: post.authorLogoUrl,

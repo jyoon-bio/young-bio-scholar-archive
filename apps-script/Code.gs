@@ -13,7 +13,7 @@ const CMS = Object.freeze({
   SETTINGS: 'SETTINGS',
   TIMEZONE: 'Asia/Seoul',
   CACHE_SECONDS: 300,
-  CACHE_VERSION: 'v2'
+  CACHE_VERSION: 'v3'
 });
 
 function doGet(e) {
@@ -107,6 +107,7 @@ function getPublicPostRows_(spreadsheet) {
 function buildPostSummary_(row, index, settings) {
   const activityDate = asDate_(row['Activity Date*']);
   const publishDate = asDate_(row['Publish Date*']);
+  const cmsPublishedAt = asDate_(row['CMS Published At (Auto)']) || publishDate;
   const featuredImagePath = clean_(row['Featured Image Path']);
   const ogImagePath = clean_(row['OG Image Path']) || featuredImagePath;
   const slug = clean_(row['Slug*']);
@@ -120,6 +121,7 @@ function buildPostSummary_(row, index, settings) {
     activityDate: formatDate_(activityDate),
     activityYear: activityDate ? activityDate.getFullYear() : null,
     publishDate: formatDate_(publishDate),
+    cmsPublishedAt: formatDateTime_(cmsPublishedAt),
     researchTheme: clean_(row['Research Theme*']),
     authorNickname: clean_(row['Author Nickname (Override)']) || settings.authorNickname,
     authorLogoUrl: imageUrl_(settings.imageBaseUrl, clean_(row['Author Logo Path (Override)']) || settings.authorLogoPath),
@@ -249,6 +251,10 @@ function formatDate_(date) {
   return date ? Utilities.formatDate(date, CMS.TIMEZONE, 'yyyy-MM-dd') : '';
 }
 
+function formatDateTime_(date) {
+  return date ? Utilities.formatDate(date, CMS.TIMEZONE, "yyyy-MM-dd'T'HH:mm:ssXXX") : '';
+}
+
 function yes_(value) {
   return String(value).trim().toLowerCase() === 'yes';
 }
@@ -275,6 +281,39 @@ function clearCmsCache() {
     keys.push(detailCacheKey_(clean_(row['Slug*'])));
   });
   CacheService.getScriptCache().removeAll(keys);
+}
+
+/**
+ * Records the first time a POSTS row is changed to Published.
+ * The timestamp is intentionally retained if the post later returns to Draft.
+ */
+function onEdit(e) {
+  if (!e || !e.range) return;
+
+  const sheet = e.range.getSheet();
+  if (sheet.getName() !== CMS.POSTS || e.range.getRow() === 1) return;
+
+  const headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getDisplayValues()[0]
+    .map(function (value) { return clean_(value); });
+  const statusColumn = headers.indexOf('Status*') + 1;
+  const timestampColumn = headers.indexOf('CMS Published At (Auto)') + 1;
+  if (!statusColumn || !timestampColumn) return;
+
+  const editedFirstColumn = e.range.getColumn();
+  const editedLastColumn = e.range.getLastColumn();
+  if (statusColumn < editedFirstColumn || statusColumn > editedLastColumn) return;
+
+  let stamped = false;
+  for (let row = Math.max(2, e.range.getRow()); row <= e.range.getLastRow(); row += 1) {
+    const status = clean_(sheet.getRange(row, statusColumn).getDisplayValue());
+    const timestampCell = sheet.getRange(row, timestampColumn);
+    if (status === 'Published' && timestampCell.isBlank()) {
+      timestampCell.setValue(new Date());
+      stamped = true;
+    }
+  }
+
+  if (stamped) clearCmsCache();
 }
 
 function testCmsList() {

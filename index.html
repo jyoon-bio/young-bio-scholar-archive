@@ -1313,16 +1313,16 @@
           <div class="post-read"><span>READ ENTRY</span><span>→</span></div>
         </a>
 
-        <a class="post-card latest" href="#">
+        <a class="post-card latest" id="latest-entry-card" href="#" aria-busy="true">
           <div class="post-top">
             <div class="post-type">
               <svg viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8"/></svg>
-              <span>Latest Entry</span>
+              <span id="latest-entry-type">Latest Entry</span>
             </div>
             <span class="new-label">NEW</span>
           </div>
-          <h3>Most Recent Archive Entry</h3>
-          <div class="post-image placeholder" aria-label="Representative image preparing">
+          <h3 id="latest-entry-title">Most Recent Archive Entry</h3>
+          <div class="post-image placeholder" id="latest-entry-image" aria-label="Representative image preparing">
             <div class="placeholder-inner">
               <svg viewBox="0 0 40 40" aria-hidden="true">
                 <rect x="7" y="8" width="26" height="24" rx="2"/>
@@ -1332,7 +1332,7 @@
               <span>준비중</span>
             </div>
           </div>
-          <div class="post-meta">Automatically updated · Latest post</div>
+          <div class="post-meta" id="latest-entry-meta">Automatically updated · Latest post</div>
           <div class="post-read"><span>READ ENTRY</span><span>→</span></div>
         </a>
       </div>
@@ -1546,6 +1546,58 @@
 
 
 <script>
+  const latestEntryCard = document.getElementById('latest-entry-card');
+
+  function latestEntryTime(post){
+    const value = post.cmsPublishedAt || (post.publishDate ? post.publishDate + 'T00:00:00+09:00' : '');
+    const timestamp = Date.parse(value);
+    return Number.isNaN(timestamp) ? 0 : timestamp;
+  }
+
+  function displayPublishDate(value){
+    return value ? value.replaceAll('-', '.') : '';
+  }
+
+  async function loadLatestEntry(){
+    try {
+      const response = await fetch('/api/archive', {cache:'no-store'});
+      if (!response.ok) throw new Error('Archive API request failed.');
+
+      const payload = await response.json();
+      const posts = (payload.posts || [])
+        .filter(function(post){ return post.showOnHome === true; })
+        .sort(function(a, b){ return latestEntryTime(b) - latestEntryTime(a); });
+      if (!posts.length) return;
+
+      const post = posts[0];
+      latestEntryCard.href = post.url || ('/archive/' + encodeURIComponent(post.slug));
+      document.getElementById('latest-entry-type').textContent = post.contentType || 'Latest Entry';
+      document.getElementById('latest-entry-title').textContent = post.title;
+      document.getElementById('latest-entry-meta').textContent = [
+        displayPublishDate(post.publishDate),
+        post.researchTheme
+      ].filter(Boolean).join(' · ');
+
+      if (post.featuredImageUrl) {
+        const imageContainer = document.getElementById('latest-entry-image');
+        const image = document.createElement('img');
+        image.src = post.featuredImageUrl;
+        image.alt = post.featuredImageAlt || post.title;
+        image.loading = 'lazy';
+        image.decoding = 'async';
+        imageContainer.classList.remove('placeholder');
+        imageContainer.removeAttribute('aria-label');
+        imageContainer.replaceChildren(image);
+      }
+    } catch (error) {
+      console.warn('Latest entry could not be loaded:', error);
+    } finally {
+      latestEntryCard.removeAttribute('aria-busy');
+    }
+  }
+
+  loadLatestEntry();
+
   const backToTopButton = document.querySelector('.back-to-top');
 
   function updateBackToTopButton(){
