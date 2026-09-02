@@ -1570,7 +1570,7 @@
 
   async function loadLatestEntry(){
     try {
-      const response = await fetch('/api/archive?v=20260902-content-types-v1', {cache:'no-store'});
+      const response = await fetch('/api/archive?v=20260902-content-types-v3', {cache:'no-store'});
       if (!response.ok) throw new Error('Archive API request failed.');
 
       const payload = await response.json();
