@@ -1,11 +1,24 @@
 (() => {
   'use strict';
 
-  const LIST_API_URL = '/api/archive';
+  const API_VERSION = '20260902-content-types-v1';
+  const LIST_API_URL = `/api/archive?v=${API_VERSION}`;
   const DETAIL_API_URL = '/api/archive-detail';
-  const CACHE_KEY = 'young-bio-archive-list-v2';
-  const DETAIL_CACHE_PREFIX = 'young-bio-archive-detail-v2:';
+  const CACHE_KEY = 'young-bio-archive-list-v3';
+  const DETAIL_CACHE_PREFIX = 'young-bio-archive-detail-v3:';
   const CACHE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
+  const CONTENT_TYPES = ['Learning Note', 'Paper Review', 'Inquiry', 'Research Project', 'Introduction'];
+  const CONTENT_TYPE_ALIASES = {
+    'Concept Note': 'Learning Note',
+    'Research Note': 'Learning Note',
+    Analysis: 'Learning Note',
+    Reflection: 'Learning Note',
+    'Review Paper': 'Paper Review',
+    Question: 'Inquiry',
+    'Hypothesis Note': 'Inquiry',
+    Proposal: 'Inquiry',
+    'Original Research': 'Research Project'
+  };
   const state = {
     posts: [],
     details: {},
@@ -27,6 +40,31 @@
     .replaceAll("'", '&#039;');
 
   const joinClass = (...items) => items.filter(Boolean).join(' ');
+  const cleanText = (value) => value == null ? '' : String(value).trim();
+  const hasText = (value) => Boolean(cleanText(value));
+  const normalizeContentType = (value) => CONTENT_TYPE_ALIASES[cleanText(value)] || cleanText(value);
+  const normalizeInquiryStage = (value, originalType) => {
+    if (normalizeContentType(originalType) !== 'Inquiry') return '';
+    const stage = cleanText(value);
+    if (['Question', 'Hypothesis', 'Proposal'].includes(stage)) return stage;
+    return originalType === 'Question' ? 'Question'
+      : originalType === 'Hypothesis Note' ? 'Hypothesis'
+        : originalType === 'Proposal' ? 'Proposal' : '';
+  };
+  const normalizePost = (post = {}) => {
+    const originalType = cleanText(post.contentType);
+    return {
+      ...post,
+      contentType: normalizeContentType(originalType),
+      inquiryStage: normalizeInquiryStage(post.inquiryStage, originalType),
+      researchQuestion: cleanText(post.researchQuestion),
+      reflection: cleanText(post.reflection),
+      notes: cleanText(post.notes),
+      revisionNote: cleanText(post.revisionNote),
+      blocks: Array.isArray(post.blocks) ? post.blocks : [],
+      references: Array.isArray(post.references) ? post.references : []
+    };
+  };
   const formatDate = (value) => {
     if (!value) return '';
     const date = new Date(`${value}T00:00:00`);
@@ -149,33 +187,40 @@
 
   function renderBlocks(blocks) {
     return (blocks || []).map((block) => {
+      if (!block || !hasText(block.type)) return '';
+      const content = cleanText(block.content);
+      const heading = cleanText(block.heading);
+      const quoteSource = cleanText(block.quoteSource);
+      const imageUrl = cleanText(block.imageUrl);
+      const imageAlt = cleanText(block.imageAlt);
+      const caption = cleanText(block.caption);
       const headingTag = ['H2', 'H3', 'H4'].includes(block.headingLevel) ? block.headingLevel.toLowerCase() : 'h2';
       switch (block.type) {
         case 'Heading':
-          return block.heading ? `<${headingTag}>${escapeHtml(block.heading)}</${headingTag}>` : '';
+          return heading ? `<${headingTag}>${escapeHtml(heading)}</${headingTag}>` : '';
         case 'Paragraph':
-          return block.content ? `<p>${escapeHtml(block.content).replaceAll('\n', '<br>')}</p>` : '';
+          return content ? `<p>${escapeHtml(content).replaceAll('\n', '<br>')}</p>` : '';
         case 'Quote':
-          return block.content ? `
+          return content ? `
             <figure class="article-quote">
-              <blockquote>${escapeHtml(block.content)}</blockquote>
-              ${block.quoteSource ? `<cite>— ${escapeHtml(block.quoteSource)}</cite>` : ''}
+              <blockquote>${escapeHtml(content)}</blockquote>
+              ${quoteSource ? `<cite>— ${escapeHtml(quoteSource)}</cite>` : ''}
             </figure>` : '';
         case 'Image':
-          return block.imageUrl ? `
+          return imageUrl ? `
             <figure class="article-image">
-              <img src="${escapeHtml(block.imageUrl)}" alt="${escapeHtml(block.imageAlt)}" loading="lazy">
-              ${block.caption ? `<figcaption>${escapeHtml(block.caption)}</figcaption>` : ''}
+              <img src="${escapeHtml(imageUrl)}" alt="${escapeHtml(imageAlt)}" loading="lazy">
+              ${caption ? `<figcaption>${escapeHtml(caption)}</figcaption>` : ''}
             </figure>` : '';
         case 'List': {
-          const items = String(block.content || '').split(/\r?\n/).map((item) => item.replace(/^[-*]\s*/, '').trim()).filter(Boolean);
+          const items = content.split(/\r?\n/).map((item) => item.replace(/^[-*]\s*/, '').trim()).filter(Boolean);
           return items.length ? `<ul>${items.map((item) => `<li>${escapeHtml(item)}</li>`).join('')}</ul>` : '';
         }
         case 'Table':
-          return renderTextTable(block.content);
+          return renderTextTable(content);
         case 'Embed':
-          return /^https?:\/\//i.test(block.content || '')
-            ? `<p><a href="${escapeHtml(block.content)}" target="_blank" rel="noopener noreferrer">View related material ↗</a></p>`
+          return /^https?:\/\//i.test(content)
+            ? `<p><a href="${escapeHtml(content)}" target="_blank" rel="noopener noreferrer">View related material ↗</a></p>`
             : '';
         default:
           return '';
@@ -197,8 +242,10 @@
     if (!post) return showEmpty();
     state.currentSlug = post.slug;
 
+    post = normalizePost(post);
     $('#meta-kicker').innerHTML = `
       <span>${escapeHtml(post.contentType)}</span>
+      ${post.contentType === 'Inquiry' && hasText(post.inquiryStage) ? `<span>${escapeHtml(post.inquiryStage)}</span>` : ''}
       <span>${escapeHtml(post.activityYear)}</span>
       <span>${escapeHtml(post.researchTheme)}</span>`;
     $('#post-title').textContent = post.title;
@@ -213,24 +260,28 @@
       </span>
       <span class="published-date">PUBLISHED <strong>${formatDate(post.publishDate)}</strong></span>`;
 
-    const featured = post.featuredImageUrl
+    const featured = hasText(post.featuredImageUrl)
       ? `<figure class="featured-image"><img src="${escapeHtml(post.featuredImageUrl)}" alt="${escapeHtml(post.featuredImageAlt)}"></figure>`
       : '';
-    const question = post.researchQuestion
+    const question = hasText(post.researchQuestion)
       ? `<div class="research-question"><span class="label">MY CONTINUING QUESTION</span><p>${escapeHtml(post.researchQuestion)}</p></div>`
       : '';
-    const reflection = post.reflection
+    const reflection = hasText(post.reflection)
       ? `<div class="reflection"><h2>Reflection</h2><p>${escapeHtml(post.reflection).replaceAll('\n', '<br>')}</p></div>`
       : '';
-    const notes = post.notes
+    const notes = hasText(post.notes)
       ? `<section class="post-notes"><h2>NOTES</h2><p>${escapeHtml(post.notes).replaceAll('\n', '<br>')}</p></section>`
       : '';
-    const revision = post.revisionNote
+    const revision = hasText(post.revisionNote)
       ? `<section class="revision-note"><h2>REVISION NOTE</h2><p>${escapeHtml(post.revisionNote).replaceAll('\n', '<br>')}</p></section>`
       : '';
-    const references = post.references?.length
-      ? `<section class="references"><h2>REFERENCES</h2><ol>${post.references.map((reference) => {
-        const title = reference.url
+    const validReferences = post.references.filter((reference) => reference && [
+      reference.authors, reference.title, reference.journalOrPublisher,
+      reference.year, reference.doi, reference.url
+    ].some(hasText));
+    const references = validReferences.length
+      ? `<section class="references"><h2>REFERENCES</h2><ol>${validReferences.map((reference) => {
+        const title = hasText(reference.url)
           ? `<a href="${escapeHtml(reference.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(reference.title)}</a>`
           : escapeHtml(reference.title);
         const details = [reference.authors, title, reference.journalOrPublisher, reference.year, reference.doi ? `DOI: ${escapeHtml(reference.doi)}` : ''].filter(Boolean).join('. ');
@@ -287,7 +338,7 @@
     }
 
     try {
-      const response = await fetch(`${DETAIL_API_URL}?slug=${encodeURIComponent(summary.slug)}`, {
+      const response = await fetch(`${DETAIL_API_URL}?slug=${encodeURIComponent(summary.slug)}&v=${API_VERSION}`, {
         method: 'GET',
         cache: 'no-store'
       });
@@ -296,6 +347,7 @@
       if (!payload.ok || !payload.post) throw new Error(payload.error || 'Invalid post response.');
 
       writeDetailCache(summary.slug, payload);
+      payload.post = normalizePost(payload.post);
       state.details[summary.slug] = payload.post;
       if (!cachedPayload || payload.generatedAt !== cachedPayload.generatedAt) paintPost(payload.post, false);
     } catch (error) {
@@ -368,7 +420,7 @@
   }
 
   function applyPayload(payload) {
-    state.posts = Array.isArray(payload.posts) ? payload.posts : [];
+    state.posts = Array.isArray(payload.posts) ? payload.posts.map(normalizePost) : [];
     state.settings = payload.settings || state.settings;
     state.generatedAt = payload.generatedAt || '';
     if (!state.posts.length) {
@@ -377,7 +429,7 @@
     }
 
     fillYearButtons();
-    fillSelect('#type-filter', availableValues('contentType'), 'All Types');
+    fillSelect('#type-filter', CONTENT_TYPES, 'All Types');
     fillSelect('#theme-filter', availableValues('researchTheme'), 'All Themes');
     renderList();
     renderPost(requestedSlug() || state.posts[0].slug, false);
