@@ -1,4 +1,21 @@
 const CMS_URL = 'https://script.google.com/macros/s/AKfycbwiZsgp3l-qoRFRDM0iwQwcONKoIyenzNhCHdbx0fBI41F6q1_NBum17fccVgPa5Lpx/exec';
+const CONTENT_TYPE_ALIASES = {
+  'Concept Note': 'Learning Note', 'Research Note': 'Learning Note', Analysis: 'Learning Note', Reflection: 'Learning Note',
+  'Review Paper': 'Paper Review', Question: 'Inquiry', 'Hypothesis Note': 'Inquiry', Proposal: 'Inquiry',
+  'Original Research': 'Research Project'
+};
+
+function normalizeType(value) {
+  const source = String(value || '').trim();
+  return CONTENT_TYPE_ALIASES[source] || source;
+}
+
+function normalizeStage(value, originalType) {
+  if (normalizeType(originalType) !== 'Inquiry') return '';
+  const stage = String(value || '').trim();
+  if (['Question', 'Hypothesis', 'Proposal'].includes(stage)) return stage;
+  return originalType === 'Question' ? 'Question' : originalType === 'Hypothesis Note' ? 'Hypothesis' : originalType === 'Proposal' ? 'Proposal' : '';
+}
 
 module.exports = async function handler(request, response) {
   if (request.method !== 'GET') {
@@ -31,7 +48,8 @@ module.exports = async function handler(request, response) {
         title: post.title,
         slug: post.slug,
         url: post.url,
-        contentType: post.contentType,
+        contentType: normalizeType(post.contentType),
+        inquiryStage: normalizeStage(post.inquiryStage, post.contentType),
         activityDate: post.activityDate,
         activityYear: post.activityYear,
         publishDate: post.publishDate,
