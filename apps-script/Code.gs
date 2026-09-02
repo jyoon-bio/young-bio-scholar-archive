@@ -13,7 +13,7 @@ const CMS = Object.freeze({
   SETTINGS: 'SETTINGS',
   TIMEZONE: 'Asia/Seoul',
   CACHE_SECONDS: 300,
-  CACHE_VERSION: 'v3'
+  CACHE_VERSION: 'v4'
 });
 
 function doGet(e) {
@@ -117,7 +117,8 @@ function buildPostSummary_(row, index, settings) {
     title: clean_(row['Title*']),
     slug: slug,
     url: joinPath_(settings.archiveBasePath, slug),
-    contentType: clean_(row['Content Type*']),
+    contentType: normalizeContentType_(row['Content Type*']),
+    inquiryStage: normalizeInquiryStage_(row['Inquiry Stage (Optional)'], row['Content Type*']),
     activityDate: formatDate_(activityDate),
     activityYear: activityDate ? activityDate.getFullYear() : null,
     publishDate: formatDate_(publishDate),
@@ -127,7 +128,7 @@ function buildPostSummary_(row, index, settings) {
     authorLogoUrl: imageUrl_(settings.imageBaseUrl, clean_(row['Author Logo Path (Override)']) || settings.authorLogoPath),
     featuredImageUrl: imageUrl_(settings.imageBaseUrl, featuredImagePath),
     featuredImageAlt: clean_(row['Featured Image Alt']),
-    researchQuestion: clean_(row['Research Question*']),
+    researchQuestion: clean_(row['Research Question (Optional)'] || row['Research Question*']),
     showOnHome: yes_(row['Show on HOME']),
     showInProposals: yes_(row['Show in PROPOSALS']),
     seo: {
@@ -154,6 +155,7 @@ function readBlocksForPost_(spreadsheet, postId, imageBaseUrl) {
         caption: clean_(row['Caption'])
       };
     })
+    .filter(validBlock_)
     .sort(function (a, b) { return a.order - b.order; });
 }
 
@@ -172,7 +174,53 @@ function readReferencesForPost_(spreadsheet, postId) {
         accessedDate: formatDate_(asDate_(row['Accessed Date']))
       };
     })
+    .filter(validReference_)
     .sort(function (a, b) { return a.order - b.order; });
+}
+
+function normalizeContentType_(value) {
+  const source = clean_(value);
+  const aliases = {
+    'Concept Note': 'Learning Note',
+    'Research Note': 'Learning Note',
+    'Analysis': 'Learning Note',
+    'Reflection': 'Learning Note',
+    'Review Paper': 'Paper Review',
+    'Question': 'Inquiry',
+    'Hypothesis Note': 'Inquiry',
+    'Proposal': 'Inquiry',
+    'Original Research': 'Research Project'
+  };
+  return aliases[source] || source;
+}
+
+function normalizeInquiryStage_(value, originalContentType) {
+  if (normalizeContentType_(originalContentType) !== 'Inquiry') return '';
+  const source = clean_(value);
+  if (['Question', 'Hypothesis', 'Proposal'].indexOf(source) >= 0) return source;
+  const legacy = clean_(originalContentType);
+  if (legacy === 'Question') return 'Question';
+  if (legacy === 'Hypothesis Note') return 'Hypothesis';
+  if (legacy === 'Proposal') return 'Proposal';
+  return '';
+}
+
+function validBlock_(block) {
+  if (!block || !clean_(block.type)) return false;
+  if (block.type === 'Heading') return Boolean(clean_(block.heading));
+  if (block.type === 'Image') return Boolean(clean_(block.imageUrl));
+  return Boolean(clean_(block.content));
+}
+
+function validReference_(reference) {
+  return Boolean(reference && [
+    reference.authors,
+    reference.title,
+    reference.journalOrPublisher,
+    reference.year,
+    reference.doi,
+    reference.url
+  ].some(function (value) { return Boolean(clean_(value)); }));
 }
 
 function publicPayload_(content) {
