@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const API_VERSION = '20260902-content-types-v3';
+  const API_VERSION = '20260911-post009-v4';
   const LIST_API_URL = `/api/archive?v=${API_VERSION}`;
   const DETAIL_API_URL = '/api/archive-detail';
   const CACHE_KEY = 'young-bio-archive-list-v3';
