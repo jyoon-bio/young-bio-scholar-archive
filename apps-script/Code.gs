@@ -255,7 +255,7 @@ function readSettings_(spreadsheet) {
     authorLogoPath: clean_(map['Author Logo Path']),
     imageBaseUrl: clean_(map['Image Base URL']),
     archiveBasePath: clean_(map['Archive Base Path']) || '/archive/',
-    postsPerListPage: Number(map['Posts per List Page']) || 10,
+    postsPerListPage: Number(map['Posts per List Page']) || 5,
     timezone: clean_(map['Timezone']) || CMS.TIMEZONE
   };
 }
