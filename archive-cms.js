@@ -1,10 +1,10 @@
 (() => {
   'use strict';
 
-  const API_VERSION = '20260911-post009-v4';
+  const API_VERSION = '20260910-list-page-size-v5';
   const LIST_API_URL = `/api/archive?v=${API_VERSION}`;
   const DETAIL_API_URL = '/api/archive-detail';
-  const CACHE_KEY = 'young-bio-archive-list-v3';
+  const CACHE_KEY = 'young-bio-archive-list-v4';
   const DETAIL_CACHE_PREFIX = 'young-bio-archive-detail-v3:';
   const CACHE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
   const CONTENT_TYPES = ['Learning Note', 'Paper Review', 'Inquiry', 'Research Project', 'Introduction'];
@@ -22,7 +22,7 @@
   const state = {
     posts: [],
     details: {},
-    settings: { postsPerListPage: 10 },
+    settings: { postsPerListPage: 5 },
     generatedAt: '',
     selectedYear: 'all',
     selectedType: 'all',
@@ -148,7 +148,7 @@
 
   function renderList() {
     const filtered = filteredPosts();
-    const perPage = Number(state.settings.postsPerListPage) || 10;
+    const perPage = Number(state.settings.postsPerListPage) || 5;
     const pageCount = Math.max(1, Math.ceil(filtered.length / perPage));
     state.listPage = Math.min(state.listPage, pageCount);
     const visible = filtered.slice((state.listPage - 1) * perPage, state.listPage * perPage);
