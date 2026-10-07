@@ -1,11 +1,11 @@
 (() => {
   'use strict';
 
-  const API_VERSION = '20260919-post015-v2';
+  const API_VERSION = '20261007-post016-v1';
   const LIST_API_URL = `/api/archive?v=${API_VERSION}`;
   const DETAIL_API_URL = '/api/archive-detail';
-  const CACHE_KEY = 'young-bio-archive-list-v4';
-  const DETAIL_CACHE_PREFIX = 'young-bio-archive-detail-v3:';
+  const CACHE_KEY = 'young-bio-archive-list-v5';
+  const DETAIL_CACHE_PREFIX = 'young-bio-archive-detail-v4:';
   const CACHE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
   const CONTENT_TYPES = ['Learning Note', 'Paper Review', 'Inquiry', 'Research Project', 'Introduction'];
   const CONTENT_TYPE_ALIASES = {
