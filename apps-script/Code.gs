@@ -21,6 +21,8 @@ function doGet(e) {
     const params = (e && e.parameter) || {};
     const mode = clean_(params.mode).toLowerCase();
 
+    if (mode === 'home') return json_(getHomePostPayload_());
+
     if (mode === 'detail' || params.slug) {
       const detailPayload = getPublicPostPayload_(clean_(params.slug));
       return json_(detailPayload || { ok: false, error: 'POST_NOT_FOUND' });
@@ -35,6 +37,29 @@ function doGet(e) {
       message: String(error && error.message ? error.message : error)
     });
   }
+}
+
+// Home reads bypass the five-minute archive cache so a refresh sees CMS edits.
+// Existing archive list/detail behavior and columns are unchanged.
+function getHomePostPayload_() {
+  const spreadsheet = SpreadsheetApp.getActiveSpreadsheet();
+  const settings = readSettings_(spreadsheet);
+  const posts = readRows_(spreadsheet, CMS.POSTS)
+    .filter(function (row) {
+      return clean_(row['Status*']).toLowerCase() === 'published';
+    })
+    .map(function (row, index) {
+      const post = buildPostSummary_(row, index, settings);
+      post.status = clean_(row['Status*']);
+      const originalType = clean_(row['Content Type*']);
+      post.contentType = originalType === 'Research Question' ? 'Inquiry' : originalType;
+      // Current CMS stores this public tag as 'Research Thread: ...' in Admin Memo.
+      // Return only the named tag; never return the internal memo itself.
+      const threadTag = clean_(row['Admin Memo']).match(/(?:^|\|)\s*Research Thread:\s*([^|]+)(?:\||$)/);
+      post.researchThread = clean_(row['Research Thread'] || row['Research Thread*'] || (threadTag && threadTag[1]));
+      return post;
+    });
+  return publicPayload_({ settings: settings, posts: posts, homeSchemaVersion: 1 });
 }
 
 function getPublicListPayload_() {

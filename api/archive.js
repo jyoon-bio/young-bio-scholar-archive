@@ -23,8 +23,9 @@ module.exports = async function handler(request, response) {
     return response.status(405).json({ ok: false, error: 'Method not allowed.' });
   }
 
+  const home = request.query?.mode === 'home';
   try {
-    const upstream = await fetch(`${CMS_URL}?mode=list`, {
+    const upstream = await fetch(`${CMS_URL}?mode=${home ? 'home' : 'list'}`, {
       method: 'GET',
       redirect: 'follow',
       headers: { Accept: 'application/json' }
@@ -39,16 +40,22 @@ module.exports = async function handler(request, response) {
       throw new Error(payload?.message || payload?.error || 'Invalid CMS response.');
     }
 
+    if (home && payload.homeSchemaVersion !== 1) {
+      throw new Error('Home CMS schema missing; deploy the updated Apps Script first.');
+    }
+
     const listPayload = {
       ok: true,
       generatedAt: payload.generatedAt,
+      ...(home ? { homeSchemaVersion: payload.homeSchemaVersion } : {}),
       settings: payload.settings || {},
       posts: (payload.posts || []).map((post) => ({
+        ...(home ? { status: post.status, researchThread: post.researchThread } : {}),
         no: post.no,
         title: post.title,
         slug: post.slug,
         url: post.url,
-        contentType: normalizeType(post.contentType),
+        contentType: home ? (String(post.contentType || '').trim() === 'Research Question' ? 'Inquiry' : String(post.contentType || '').trim()) : normalizeType(post.contentType),
         inquiryStage: normalizeStage(post.inquiryStage, post.contentType),
         activityDate: post.activityDate,
         activityYear: post.activityYear,
@@ -65,6 +72,13 @@ module.exports = async function handler(request, response) {
         seo: post.seo
       }))
     };
+
+    if (home) {
+      response.setHeader('Cache-Control', 'no-store');
+      response.setHeader('CDN-Cache-Control', 'no-store');
+      response.setHeader('Vercel-CDN-Cache-Control', 'no-store');
+      return response.status(200).json(listPayload);
+    }
 
     response.setHeader('Content-Type', 'application/json; charset=utf-8');
     response.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
