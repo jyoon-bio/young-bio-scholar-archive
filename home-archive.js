@@ -1,6 +1,8 @@
 (() => {
   'use strict';
   const TYPES = ['Learning Note', 'Paper Review', 'Inquiry', 'Research Project', 'Introduction'];
+  const CACHE_KEY = 'bio-home-archive-v1';
+  const CACHE_MAX_AGE = 30 * 60 * 1000;
   const SLOTS = ['Paper Review', 'Inquiry', 'Research Project', 'Latest Entry'];
   const clean = value => String(value ?? '').trim();
   const typeOf = post => clean(post.contentType) === 'Research Question' ? 'Inquiry' : clean(post.contentType);
@@ -81,22 +83,78 @@
     card.removeAttribute('aria-busy');
   }
 
+  function validPayload(payload) {
+    return payload && payload.ok === true && payload.homeSchemaVersion === 1
+      && Array.isArray(payload.posts);
+  }
+
+  function readCache() {
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(CACHE_KEY) || 'null');
+      const age = Date.now() - saved?.savedAt;
+      return age >= 0 && age < CACHE_MAX_AGE && validPayload(saved?.payload)
+        ? saved.payload : null;
+    } catch { return null; }
+  }
+
+  function saveCache(payload) {
+    try {
+      sessionStorage.setItem(CACHE_KEY, JSON.stringify({savedAt: Date.now(), payload}));
+    } catch { /* Storage limits must not block the cards. */ }
+  }
+
+  function cardSignature(post) {
+    if (!post) return 'empty';
+    return JSON.stringify([
+      typeOf(post), clean(post.title), clean(post.slug), clean(post.url),
+      clean(post.activityYear), clean(post.researchThread),
+      clean(post.featuredImageUrl), clean(post.featuredImageAlt)
+    ]);
+  }
+
   async function loadHomeArchive() {
     const cards = [...document.querySelectorAll('[data-home-card]')];
-    try {
-      const response = await fetch('/api/archive?mode=home', {cache: 'no-store'});
-      if (!response.ok) throw new Error(`Home archive request failed (${response.status}).`);
-      const payload = await response.json();
-      if (!payload.ok || !Array.isArray(payload.posts) || payload.homeSchemaVersion !== 1)
-        throw new Error('Home CMS schema is unavailable. Update the Apps Script web app deployment.');
+    const signatures = [];
+    let hasData = false;
+    function showPayload(payload) {
       const selected = selectPosts(payload.posts);
       cards.forEach((card, index) => {
-        try { render(card, selected[index], index); }
-        catch (error) { console.error('Home archive card failed:', index, error); render(card, null, index, true); }
+        const signature = cardSignature(selected[index]);
+        if (signatures[index] === signature) return;
+        try {
+          render(card, selected[index], index);
+          signatures[index] = signature;
+        } catch (error) {
+          console.error('Home archive card failed:', index, error);
+          render(card, null, index, true);
+        }
       });
+      hasData = true;
+    }
+
+    // Restore before the network request so navigation does not show placeholders.
+    const cached = readCache();
+    if (cached) showPayload(cached);
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 55000);
+    try {
+      // Refresh from the live CMS on every visit, including additions/removals.
+      const response = await fetch('/api/archive?mode=home', {
+        cache: 'no-store', signal: controller.signal
+      });
+      if (!response.ok) throw new Error(`Home archive request failed (${response.status}).`);
+      const payload = await response.json();
+      if (!validPayload(payload))
+        throw new Error('Home CMS schema is unavailable. Update the Apps Script web app deployment.');
+      showPayload(payload);
+      saveCache(payload);
     } catch (error) {
-      console.error('Home archive could not be loaded:', error);
-      cards.forEach((card, index) => render(card, null, index, true));
+      console.error('Home archive could not be refreshed:', error);
+      // Failed background refreshes must not erase loaded cards.
+      if (!hasData) cards.forEach((card, index) => render(card, null, index, true));
+    } finally {
+      clearTimeout(timeout);
     }
   }
 
