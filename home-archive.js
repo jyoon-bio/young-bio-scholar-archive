@@ -1,7 +1,7 @@
 (() => {
   'use strict';
   const TYPES = ['Learning Note', 'Paper Review', 'Inquiry', 'Research Project', 'Introduction'];
-  const CACHE_KEY = 'bio-home-archive-v3';
+  const CACHE_KEY = 'bio-home-archive-v4';
   const CACHE_MAX_AGE = 30 * 60 * 1000;
   const SLOTS = ['Paper Review', 'Inquiry', 'Research Project', 'Latest Entry'];
   const clean = value => String(value ?? '').trim();
