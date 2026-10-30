@@ -58,7 +58,7 @@
     card.querySelector('.post-type span').textContent = post ? typeOf(post) : SLOTS[index];
     card.querySelector('h3').textContent = post ? clean(post.title) || 'Untitled Entry' : failed ? 'Unable to load entries' : 'Coming Soon';
     card.querySelector('.post-meta').textContent = post
-      ? [clean(post.activityYear), clean(post.researchThread)].filter(Boolean).join(' · ') : '';
+      ? clean(post.researchThread) : '';
     const container = card.querySelector('.post-image');
     placeholder(container);
     if (post) {
