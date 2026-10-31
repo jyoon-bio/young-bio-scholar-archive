@@ -325,7 +325,12 @@
   }
 
   async function renderPost(slug, pushState = false) {
-    const summary = state.posts.find((item) => item.slug === slug) || state.posts[0];
+    // A cached list may predate a newly published entry. Keep the requested
+    // slug and fetch its detail directly instead of opening an unrelated post.
+    const requested = String(slug || '').trim();
+    const summary = requested
+      ? state.posts.find((item) => item.slug === requested) || { slug: requested, title: 'Loading this research entry…' }
+      : state.posts[0];
     if (!summary) return showEmpty();
 
     const cachedPayload = readDetailCache(summary.slug);
