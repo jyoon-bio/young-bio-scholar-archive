@@ -1365,105 +1365,14 @@
       </div>
 
       <div class="proposal-tabs" role="tablist" aria-label="Proposal categories">
-        <button class="proposal-tab" type="button" role="tab" aria-selected="false" data-panel="questions">RESEARCH QUESTIONS</button>
-        <button class="proposal-tab" type="button" role="tab" aria-selected="false" data-panel="hypotheses">HYPOTHESIS NOTES</button>
-        <button class="proposal-tab active" type="button" role="tab" aria-selected="true" data-panel="research-proposals">RESEARCH PROPOSALS</button>
+        <button class="proposal-tab active" id="tab-questions" aria-controls="questions" type="button" role="tab" aria-selected="true" data-panel="questions">RESEARCH QUESTIONS</button>
+        <button class="proposal-tab" id="tab-hypotheses" aria-controls="hypotheses" type="button" role="tab" aria-selected="false" data-panel="hypotheses">HYPOTHESIS NOTES</button>
+        <button class="proposal-tab" id="tab-research-proposals" aria-controls="research-proposals" type="button" role="tab" aria-selected="false" data-panel="research-proposals">RESEARCH PROPOSALS</button>
       </div>
 
-      <div class="proposal-panel" id="questions" role="tabpanel">
-        <div class="proposal-list">
-          <a class="proposal-item" href="#"><div class="proposal-thumb" aria-label="Representative image preparing">
-  <svg viewBox="0 0 40 40" aria-hidden="true">
-    <rect x="8" y="9" width="24" height="22" rx="2"/>
-    <path d="M11 27l6-6 5 5 4-4 6 6"/>
-    <circle cx="25.5" cy="15.5" r="2.3"/>
-  </svg>
-  <span>준비중</span>
-</div><div><h3>Can Gene Editing Become Safer and More Precise?</h3><div class="proposal-meta">2026 · Gene Editing</div></div><div class="proposal-view">VIEW <span>→</span></div></a>
-          <a class="proposal-item" href="#"><div class="proposal-thumb" aria-label="Representative image preparing">
-  <svg viewBox="0 0 40 40" aria-hidden="true">
-    <rect x="8" y="9" width="24" height="22" rx="2"/>
-    <path d="M11 27l6-6 5 5 4-4 6 6"/>
-    <circle cx="25.5" cy="15.5" r="2.3"/>
-  </svg>
-  <span>준비중</span>
-</div><div><h3>Can Cells Be Programmed Like Biological Circuits?</h3><div class="proposal-meta">2026 · Synthetic Biology</div></div><div class="proposal-view">VIEW <span>→</span></div></a>
-          <a class="proposal-item" href="#"><div class="proposal-thumb" aria-label="Representative image preparing">
-  <svg viewBox="0 0 40 40" aria-hidden="true">
-    <rect x="8" y="9" width="24" height="22" rx="2"/>
-    <path d="M11 27l6-6 5 5 4-4 6 6"/>
-    <circle cx="25.5" cy="15.5" r="2.3"/>
-  </svg>
-  <span>준비중</span>
-</div><div><h3>Can Rare Cell Populations Predict Disease?</h3><div class="proposal-meta">2026 · Single-Cell Biology</div></div><div class="proposal-view">VIEW <span>→</span></div></a>
-          <a class="proposal-item" href="#"><div class="proposal-thumb" aria-label="Representative image preparing">
-  <svg viewBox="0 0 40 40" aria-hidden="true">
-    <rect x="8" y="9" width="24" height="22" rx="2"/>
-    <path d="M11 27l6-6 5 5 4-4 6 6"/>
-    <circle cx="25.5" cy="15.5" r="2.3"/>
-  </svg>
-  <span>준비중</span>
-</div><div><h3>Prediction vs. Biological Validation</h3><div class="proposal-meta">2026 · Computational Biology</div></div><div class="proposal-view">VIEW <span>→</span></div></a>
-        </div>
-      </div>
-
-      <div class="proposal-panel" id="hypotheses" role="tabpanel">
-        <div class="proposal-list">
-          <a class="proposal-item" href="#"><div class="proposal-thumb" aria-label="Representative image preparing">
-  <svg viewBox="0 0 40 40" aria-hidden="true">
-    <rect x="8" y="9" width="24" height="22" rx="2"/>
-    <path d="M11 27l6-6 5 5 4-4 6 6"/>
-    <circle cx="25.5" cy="15.5" r="2.3"/>
-  </svg>
-  <span>준비중</span>
-</div><div><h3>Improving Target Specificity</h3><div class="proposal-meta">2026 · Gene Editing</div></div><div class="proposal-view">VIEW <span>→</span></div></a>
-          <a class="proposal-item" href="#"><div class="proposal-thumb" aria-label="Representative image preparing">
-  <svg viewBox="0 0 40 40" aria-hidden="true">
-    <rect x="8" y="9" width="24" height="22" rx="2"/>
-    <path d="M11 27l6-6 5 5 4-4 6 6"/>
-    <circle cx="25.5" cy="15.5" r="2.3"/>
-  </svg>
-  <span>준비중</span>
-</div><div><h3>Improving Tumor Recognition</h3><div class="proposal-meta">2026 · Cancer &amp; Immunology</div></div><div class="proposal-view">VIEW <span>→</span></div></a>
-        </div>
-      </div>
-
-      <div class="proposal-panel active" id="research-proposals" role="tabpanel">
-        <div class="proposal-list">
-          <a class="proposal-item" href="#"><div class="proposal-thumb" aria-label="Representative image preparing">
-  <svg viewBox="0 0 40 40" aria-hidden="true">
-    <rect x="8" y="9" width="24" height="22" rx="2"/>
-    <path d="M11 27l6-6 5 5 4-4 6 6"/>
-    <circle cx="25.5" cy="15.5" r="2.3"/>
-  </svg>
-  <span>준비중</span>
-</div><div><h3>A More Selective Engineered Immune Cell</h3><div class="proposal-meta">2026 · Cancer &amp; Immunology</div></div><div class="proposal-view">VIEW <span>→</span></div></a>
-          <a class="proposal-item" href="#"><div class="proposal-thumb" aria-label="Representative image preparing">
-  <svg viewBox="0 0 40 40" aria-hidden="true">
-    <rect x="8" y="9" width="24" height="22" rx="2"/>
-    <path d="M11 27l6-6 5 5 4-4 6 6"/>
-    <circle cx="25.5" cy="15.5" r="2.3"/>
-  </svg>
-  <span>준비중</span>
-</div><div><h3>Using Organoids to Compare Therapeutic Responses</h3><div class="proposal-meta">2026 · Bioengineering</div></div><div class="proposal-view">VIEW <span>→</span></div></a>
-          <a class="proposal-item" href="#"><div class="proposal-thumb" aria-label="Representative image preparing">
-  <svg viewBox="0 0 40 40" aria-hidden="true">
-    <rect x="8" y="9" width="24" height="22" rx="2"/>
-    <path d="M11 27l6-6 5 5 4-4 6 6"/>
-    <circle cx="25.5" cy="15.5" r="2.3"/>
-  </svg>
-  <span>준비중</span>
-</div><div><h3>Identifying Disease-Relevant Cell Populations</h3><div class="proposal-meta">2026 · Single-Cell Biology</div></div><div class="proposal-view">VIEW <span>→</span></div></a>
-          <a class="proposal-item" href="#"><div class="proposal-thumb" aria-label="Representative image preparing">
-  <svg viewBox="0 0 40 40" aria-hidden="true">
-    <rect x="8" y="9" width="24" height="22" rx="2"/>
-    <path d="M11 27l6-6 5 5 4-4 6 6"/>
-    <circle cx="25.5" cy="15.5" r="2.3"/>
-  </svg>
-  <span>준비중</span>
-</div><div><h3>Testing a Microbiome–Immune Hypothesis</h3><div class="proposal-meta">2026 · Microbiome &amp; Immunology</div></div><div class="proposal-view">VIEW <span>→</span></div></a>
-        </div>
-      </div>
+      <div class="proposal-panel active" id="questions" role="tabpanel" aria-labelledby="tab-questions"><div class="proposal-list"><p class="proposal-meta" role="status">Loading entries…</p></div></div>
+      <div class="proposal-panel" id="hypotheses" role="tabpanel" aria-labelledby="tab-hypotheses"><div class="proposal-list"><p class="proposal-meta" role="status">Loading entries…</p></div></div>
+      <div class="proposal-panel" id="research-proposals" role="tabpanel" aria-labelledby="tab-research-proposals"><div class="proposal-list"><p class="proposal-meta" role="status">Loading entries…</p></div></div>
       </div>
     </div>
   </section>
@@ -1590,5 +1499,90 @@
   });
 </script>
 
+<script>
+
+(() => {
+  'use strict';
+  const clean = value => String(value ?? '').trim();
+  const stages = {questions:'Question', hypotheses:'Hypothesis', 'research-proposals':'Proposal'};
+  const cacheKey = 'bio-proposals-v1';
+  function select(posts, stage) {
+    return posts.filter(p => p && clean(p.contentType) === 'Inquiry'
+      && clean(p.inquiryStage) === stage && clean(p.slug)
+      && (!p.status || clean(p.status).toLowerCase() === 'published'))
+      .sort((a,b) => (Date.parse(b.publishDate) || 0) - (Date.parse(a.publishDate) || 0)
+        || clean(a.slug).localeCompare(clean(b.slug))).slice(0,4);
+  }
+  function element(tag, className, text) {
+    const node = document.createElement(tag);
+    node.className = className;
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+  let initialized = false;
+  function render(posts) {
+    const groups = Object.keys(stages).map(id => [id,select(posts,stages[id])]);
+    groups.forEach(([id, entries]) => {
+      const list = document.getElementById(id).querySelector('.proposal-list');
+      list.replaceChildren();
+      if (!entries.length) {
+        list.append(element('p','proposal-meta','No entries have been published for this stage yet.'));
+        return;
+      }
+      entries.forEach(post => {
+        const link = element('a','proposal-item');
+        link.href = '/archive/' + encodeURIComponent(clean(post.slug));
+        const thumb = element('div','proposal-thumb');
+        thumb.setAttribute('aria-hidden','true');
+        const imageUrl = clean(post.featuredImageUrl);
+        if (/^(https?:\/\/|\/(?!\/))/.test(imageUrl)) {
+          const img = document.createElement('img');
+          img.alt = ''; img.loading = 'lazy'; img.decoding = 'async';
+          img.addEventListener('error',() => thumb.replaceChildren(),{once:true});
+          img.src = imageUrl; thumb.append(img);
+        }
+        const copy = element('div','proposal-copy');
+        copy.append(element('h3','',clean(post.title)),
+          element('div','proposal-meta',[clean(post.publishDate).slice(0,4),clean(post.researchTheme)].filter(Boolean).join(' · ')));
+        const view = element('div','proposal-view','VIEW ');
+        view.append(element('span','','→'));
+        link.append(thumb,copy,view); list.append(link);
+      });
+    });
+    const current = document.querySelector('.proposal-tab.active');
+    if (!initialized || !groups.find(([id,entries]) => id === current?.dataset.panel && entries.length)) {
+      const first = groups.find(([,entries]) => entries.length);
+      if (first) document.querySelector('[data-panel="'+first[0]+'"]').click();
+    }
+    initialized = true;
+  }
+  async function load() {
+    let restored = false;
+    try {
+      const saved = JSON.parse(sessionStorage.getItem(cacheKey) || 'null');
+      if (saved && Date.now()-saved.savedAt < 1800000 && Array.isArray(saved.posts)) {
+        render(saved.posts); restored = true;
+      }
+    } catch {}
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(),55000);
+    try {
+      const response = await fetch('/api/archive',{cache:'no-store',signal:controller.signal});
+      if (!response.ok) throw new Error('CMS request failed');
+      const data = await response.json();
+      if (data.ok !== true || !Array.isArray(data.posts)) throw new Error('Invalid CMS list');
+      render(data.posts);
+      try { sessionStorage.setItem(cacheKey,JSON.stringify({savedAt:Date.now(),posts:data.posts})); } catch {}
+    } catch (error) {
+      console.error('Proposals could not be refreshed:',error);
+      if (!restored) document.querySelectorAll('.proposal-list').forEach(list => {
+        list.replaceChildren(element('p','proposal-meta','Unable to load entries. Please try again later.'));
+      });
+    } finally { clearTimeout(timeout); }
+  }
+  load();
+})();
+
+</script>
 </body>
 </html>
