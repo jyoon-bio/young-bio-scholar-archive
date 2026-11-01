@@ -296,7 +296,7 @@
     document.title = `${post.seo?.title || post.title} | Young Bio-Scholar's Research Archive`;
     document.querySelector('meta[name="description"]')?.setAttribute('content', post.seo?.description || 'Student biology research archive.');
 
-    if (pushState) history.pushState({ slug: post.slug }, '', `/archive/${encodeURIComponent(post.slug)}`);
+    if (pushState) history.pushState({ slug: post.slug }, '', `/archive/${encodeURIComponent(post.slug)}${selectedThread ? '?thread=' + encodeURIComponent(selectedThread) : ''}`);
     window.scrollTo({ top: $('.archive-title-row').offsetTop, behavior: 'smooth' });
   }
 
@@ -428,6 +428,7 @@
 
   function applyPayload(payload) {
     state.posts = Array.isArray(payload.posts) ? payload.posts.map(normalizePost) : [];
+    if (selectedThread) state.posts.sort((a,b) => (Date.parse(b.publishDate) || 0) - (Date.parse(a.publishDate) || 0));
     state.settings = payload.settings || state.settings;
     state.generatedAt = payload.generatedAt || '';
     if (!state.posts.length) {
