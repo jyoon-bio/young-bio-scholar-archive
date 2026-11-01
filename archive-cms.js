@@ -57,7 +57,7 @@
     return {
       ...post,
       authorNickname: 'Jiyun Lim',
-      authorLogoUrl: '/images/shared/jiyun-lim-logo-v2.png',
+      authorLogoUrl: '/images/shared/jiyun-lim-complete-logo.png',
       contentType: normalizeContentType(originalType),
       inquiryStage: normalizeInquiryStage(post.inquiryStage, originalType),
       researchQuestion: cleanText(post.researchQuestion),
