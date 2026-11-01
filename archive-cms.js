@@ -428,7 +428,8 @@
 
   function applyPayload(payload) {
     state.posts = Array.isArray(payload.posts) ? payload.posts.map(normalizePost) : [];
-    if (selectedThread) state.posts.sort((a,b) => (Date.parse(b.publishDate) || 0) - (Date.parse(a.publishDate) || 0));
+    if (selectedThread) state.posts.sort((a,b) => (Date.parse(a.publishDate) || 0) - (Date.parse(b.publishDate) || 0)
+      || cleanText(a.slug).localeCompare(cleanText(b.slug)));
     state.settings = payload.settings || state.settings;
     state.generatedAt = payload.generatedAt || '';
     if (!state.posts.length) {
