@@ -1,7 +1,7 @@
 (() => {
   'use strict';
   const TYPES = ['Learning Note', 'Paper Review', 'Inquiry', 'Research Project', 'Introduction'];
-  const CACHE_KEY = 'bio-home-archive-v4';
+  const CACHE_KEY = 'bio-home-archive-v5';
   const CACHE_MAX_AGE = 30 * 60 * 1000;
   const SLOTS = ['Paper Review', 'Inquiry', 'Research Project', 'Latest Entry'];
   const clean = value => String(value ?? '').trim();
@@ -90,7 +90,7 @@
 
   function readCache() {
     try {
-      const saved = JSON.parse(sessionStorage.getItem(CACHE_KEY) || 'null');
+      const saved = JSON.parse(localStorage.getItem(CACHE_KEY) || 'null');
       const age = Date.now() - saved?.savedAt;
       return age >= 0 && age < CACHE_MAX_AGE && validPayload(saved?.payload)
         ? saved.payload : null;
@@ -143,18 +143,20 @@
     }
 
     // Restore before the network request so navigation does not show placeholders.
-    const cached = readCache();
+    const cached = readCache() || window.BIO_ARCHIVE_BOOTSTRAP;
     if (cached) showPayload(cached);
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 55000);
     try {
       // Refresh from the live CMS on every visit, including additions/removals.
-      const response = await fetch('/api/archive?mode=home', {
-        cache: 'no-store', signal: controller.signal
+      window.bioArchiveRefresh = fetch('/api/archive?mode=home', {
+        signal: controller.signal
+      }).then(async response => {
+        if (!response.ok) throw new Error('Home archive request failed (' + response.status + ').');
+        return response.json();
       });
-      if (!response.ok) throw new Error(`Home archive request failed (${response.status}).`);
-      const payload = await response.json();
+      const payload = await window.bioArchiveRefresh;
       if (!validPayload(payload))
         throw new Error('Home CMS schema is unavailable. Update the Apps Script web app deployment.');
       showPayload(payload);

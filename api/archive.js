@@ -75,9 +75,9 @@ module.exports = async function handler(request, response) {
     };
 
     if (home) {
-      response.setHeader('Cache-Control', 'no-store');
-      response.setHeader('CDN-Cache-Control', 'no-store');
-      response.setHeader('Vercel-CDN-Cache-Control', 'no-store');
+      response.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+      response.setHeader('CDN-Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
+      response.setHeader('Vercel-CDN-Cache-Control', 'public, s-maxage=60, stale-while-revalidate=300');
       return response.status(200).json(listPayload);
     }
 

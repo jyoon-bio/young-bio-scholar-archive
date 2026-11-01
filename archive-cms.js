@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const API_VERSION = '20261102-logo-v1';
+  const API_VERSION = '20261102-speed-v1';
   const selectedThread = new URLSearchParams(location.search).get('thread') || '';
   const LIST_API_URL = `/api/archive?v=${API_VERSION}${selectedThread ? "&mode=threads" : ""}`;
   const DETAIL_API_URL = '/api/archive-detail';
@@ -309,7 +309,7 @@
   function readDetailCache(slug) {
     try {
       const cached = JSON.parse(localStorage.getItem(detailCacheKey(slug)) || 'null');
-      if (!cached?.savedAt || !cached?.payload?.ok || !cached?.payload?.post) return null;
+      if (!cached?.savedAt || !cached?.payload?.ok || !cached?.payload?.post) return window.BIO_ARCHIVE_DETAILS?.[slug] || null;
       if (Date.now() - cached.savedAt > CACHE_MAX_AGE_MS) {
         localStorage.removeItem(detailCacheKey(slug));
         return null;
@@ -430,6 +430,7 @@
 
   function applyPayload(payload) {
     state.posts = Array.isArray(payload.posts) ? payload.posts.map(normalizePost) : [];
+    state.posts.sort((a,b) => (Date.parse(b.publishDate) || 0) - (Date.parse(a.publishDate) || 0));
     if (selectedThread) state.posts.sort((a,b) => (Date.parse(a.publishDate) || 0) - (Date.parse(b.publishDate) || 0)
       || cleanText(a.slug).localeCompare(cleanText(b.slug)));
     state.settings = payload.settings || state.settings;
@@ -459,7 +460,7 @@
   }
 
   async function loadCms() {
-    const cachedPayload = readCmsCache();
+    const cachedPayload = readCmsCache() || window.BIO_ARCHIVE_BOOTSTRAP;
     if (cachedPayload) applyPayload(cachedPayload);
     else showLoading();
 
