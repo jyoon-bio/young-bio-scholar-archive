@@ -506,6 +506,11 @@
       .published-date { margin-left: 46px; }
       .page-btn, .page-ellipsis { min-width: 32px; height: 35px; }
     }
+    #thread-selection{margin:0 0 22px;}
+    .thread-filter-chip{display:inline-flex;align-items:center;gap:16px;padding:11px 17px 11px 20px;border:1px solid #0d284e;border-radius:999px;background:#0d284e;color:#fff;text-decoration:none;box-shadow:0 3px 10px rgba(13,40,78,.15);font-size:14px;line-height:1.4;}
+    .thread-filter-chip:hover{background:#173b6c;}
+    .thread-filter-chip:focus-visible{outline:3px solid #9fc5e8;outline-offset:3px;}
+    .thread-filter-close{display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:rgba(255,255,255,.15);font-size:21px;font-weight:400;line-height:1;}
   </style>
 </head>
 <body>
@@ -560,7 +565,7 @@
           </div>
         </div>
 
-        <p id="thread-selection" hidden><strong id="thread-selection-name"></strong> · <a href="/archive.html" aria-label="Clear research thread filter">× Clear</a></p>
+        <p id="thread-selection" hidden><a class="thread-filter-chip" href="/archive.html" aria-label="Remove research thread filter"><strong id="thread-selection-name"></strong><span class="thread-filter-close" aria-hidden="true">×</span></a></p>
         <table class="post-index">
           <thead><tr><th>NO.</th><th>TITLE</th><th>YEAR</th><th>TYPE</th><th>PUBLISHED</th></tr></thead>
           <tbody id="post-index-body"></tbody>
