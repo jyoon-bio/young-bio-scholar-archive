@@ -129,6 +129,16 @@
           render(card, null, index, true);
         }
       });
+      document.querySelectorAll('[data-thread]').forEach(link => {
+        const populated = payload.posts.some(post => clean(post.status).toLowerCase() === 'published' && clean(post.researchThread) === link.dataset.thread);
+        if (populated) {
+          link.href = '/archive.html?thread=' + encodeURIComponent(link.dataset.thread);
+          link.removeAttribute('aria-disabled');
+        } else {
+          link.removeAttribute('href'); link.setAttribute('aria-disabled','true');
+        }
+        link.querySelector('.thread-status').textContent = populated ? '' : 'Coming soon';
+      });
       hasData = true;
     }
 

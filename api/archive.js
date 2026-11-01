@@ -23,7 +23,8 @@ module.exports = async function handler(request, response) {
     return response.status(405).json({ ok: false, error: 'Method not allowed.' });
   }
 
-  const home = request.query?.mode === 'home';
+  const threads = request.query?.mode === 'threads';
+  const home = request.query?.mode === 'home' || threads;
   try {
     const upstream = await fetch(`${CMS_URL}?mode=${home ? 'home' : 'list'}`, {
       method: 'GET',

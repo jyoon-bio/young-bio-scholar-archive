@@ -1,10 +1,11 @@
 (() => {
   'use strict';
 
-  const API_VERSION = '20261026-post027-v1';
-  const LIST_API_URL = `/api/archive?v=${API_VERSION}`;
+  const API_VERSION = '20261101-threads-v1';
+  const selectedThread = new URLSearchParams(location.search).get('thread') || '';
+  const LIST_API_URL = `/api/archive?v=${API_VERSION}${selectedThread ? "&mode=threads" : ""}`;
   const DETAIL_API_URL = '/api/archive-detail';
-  const CACHE_KEY = 'young-bio-archive-list-v16';
+  const CACHE_KEY = selectedThread ? 'young-bio-archive-threads-v1' : 'young-bio-archive-list-v16';
   const DETAIL_CACHE_PREFIX = 'young-bio-archive-detail-v16:';
   const CACHE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
   const CONTENT_TYPES = ['Learning Note', 'Paper Review', 'Inquiry', 'Research Project', 'Introduction'];
@@ -140,6 +141,7 @@
 
   function filteredPosts() {
     return state.posts.filter((post) =>
+      (!selectedThread || cleanText(post.researchThread) === selectedThread) &&
       (state.selectedYear === 'all' || String(post.activityYear) === state.selectedYear) &&
       (state.selectedType === 'all' || post.contentType === state.selectedType) &&
       (state.selectedTheme === 'all' || post.researchTheme === state.selectedTheme)
@@ -436,8 +438,20 @@
     fillYearButtons();
     fillSelect('#type-filter', CONTENT_TYPES, 'All Types');
     fillSelect('#theme-filter', availableValues('researchTheme'), 'All Themes');
+    if (selectedThread) {
+      $('#thread-selection').hidden = false;
+      $('#thread-selection-name').textContent = selectedThread.replace(' and ', ' & ');
+      $('#post-list-panel').hidden = false;
+      $('.post-list-toggle').setAttribute('aria-expanded','true');
+    }
     renderList();
-    renderPost(requestedSlug() || state.posts[0].slug, false);
+    const first = filteredPosts()[0];
+    if (requestedSlug() || first) renderPost(requestedSlug() || first.slug, false);
+    else {
+      $('#post-title').textContent = 'This research thread is coming soon.';
+      $('#post-body').textContent = 'Published entries for this research thread will appear here automatically.';
+      $('#post-details').replaceChildren(); $('#meta-kicker').replaceChildren(); $('#post-pagination').replaceChildren();
+    }
   }
 
   async function loadCms() {
