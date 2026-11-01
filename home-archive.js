@@ -130,7 +130,7 @@
         }
       });
       document.querySelectorAll('[data-thread]').forEach(link => {
-        const populated = payload.posts.some(post => clean(post.status).toLowerCase() === 'published' && clean(post.researchThread) === link.dataset.thread);
+        const populated = payload.posts.some(post => clean(post.status).toLowerCase() === 'published' && clean(post.researchThread).replaceAll('’', "'") === link.dataset.thread.replaceAll('’', "'"));
         if (populated) {
           link.href = '/archive.html?thread=' + encodeURIComponent(link.dataset.thread);
           link.removeAttribute('aria-disabled');

@@ -141,7 +141,7 @@
 
   function filteredPosts() {
     return state.posts.filter((post) =>
-      (!selectedThread || cleanText(post.researchThread) === selectedThread) &&
+      (!selectedThread || cleanText(post.researchThread).replaceAll("’", "'" ) === selectedThread.replaceAll("’", "'" )) &&
       (state.selectedYear === 'all' || String(post.activityYear) === state.selectedYear) &&
       (state.selectedType === 'all' || post.contentType === state.selectedType) &&
       (state.selectedTheme === 'all' || post.researchTheme === state.selectedTheme)
