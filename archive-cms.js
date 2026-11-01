@@ -1,7 +1,7 @@
 (() => {
   'use strict';
 
-  const API_VERSION = '20261101-threads-v1';
+  const API_VERSION = '20261102-logo-v1';
   const selectedThread = new URLSearchParams(location.search).get('thread') || '';
   const LIST_API_URL = `/api/archive?v=${API_VERSION}${selectedThread ? "&mode=threads" : ""}`;
   const DETAIL_API_URL = '/api/archive-detail';
@@ -56,6 +56,8 @@
     const originalType = cleanText(post.contentType);
     return {
       ...post,
+      authorNickname: 'Jiyun Lim',
+      authorLogoUrl: '/images/shared/jiyun-lim-logo.png',
       contentType: normalizeContentType(originalType),
       inquiryStage: normalizeInquiryStage(post.inquiryStage, originalType),
       researchQuestion: cleanText(post.researchQuestion),

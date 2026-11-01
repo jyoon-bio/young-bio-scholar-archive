@@ -511,15 +511,19 @@
     .thread-filter-chip:hover{background:#173b6c;}
     .thread-filter-chip:focus-visible{outline:3px solid #9fc5e8;outline-offset:3px;}
     .thread-filter-close{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:rgba(255,255,255,.15);font-size:19px;font-weight:400;line-height:1;}
+  
+    .site-logo{display:grid;place-items:center;overflow:hidden;background:#0d284e;width:38px;height:48px;flex:0 0 auto;}
+    .site-logo img{width:100%;height:100%;object-fit:contain;transform:scale(1.7);filter:grayscale(1) invert(1) contrast(10);mix-blend-mode:screen;}
+    .author-logo{background:#0d284e;overflow:hidden;isolation:isolate;}
+    .author-logo img{width:100%;height:100%;border-radius:0;object-fit:contain;transform:scale(1.65);filter:grayscale(1) invert(1) contrast(10);mix-blend-mode:screen;}
+    .author-name{text-transform:none;letter-spacing:.02em;}
   </style>
 </head>
 <body>
   <header class="topbar">
     <div class="nav-wrap">
       <a class="brand" href="/" aria-label="Young Bio-Scholar's Research Archive home">
-        <svg class="brand-mark" viewBox="0 0 40 52" aria-hidden="true">
-          <path d="M9 4c15 8 7 17 22 25M31 4C16 12 24 21 9 29M11 9h16M10 16h18M12 23h15M12 30h16M10 37h18M12 44h15" stroke="#fff" fill="none" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
+        <span class="brand-mark site-logo"><img src="/images/shared/jiyun-lim-logo.png" alt="Jiyun Lim logo"></span>
         <div class="brand-text"><span>YOUNG BIO-SCHOLAR’S</span><span>RESEARCH ARCHIVE</span></div>
       </a>
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="primary-nav" aria-label="Open menu">☰</button>
@@ -702,7 +706,7 @@
           <span class="author-logo" aria-hidden="true">
             <svg viewBox="0 0 40 52"><path d="M9 4c15 8 7 17 22 25M31 4C16 12 24 21 9 29M11 9h16M10 16h18M12 23h15M12 30h16M10 37h18M12 44h15" stroke="currentColor" fill="none" stroke-width="1.7" stroke-linecap="round"/></svg>
           </span>
-          <span class="author-name">YOUNG BIO-SCHOLAR</span>
+          <span class="author-name">Jiyun Lim</span>
         </span>
         <span class="published-date">PUBLISHED <strong>${post.date}</strong></span>`;
       $('#post-body').innerHTML = bodyFor(post);
@@ -795,6 +799,6 @@
     renderList();
     renderPost(Number(location.hash.replace('#post-', '')) || 100);
   </script>
-  <script src="/archive-cms.js?v=20261101-threads-v1"></script>
+  <script src="/archive-cms.js?v=20261102-logo-v1"></script>
 </body>
 </html>
