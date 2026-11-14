@@ -1,7 +1,7 @@
 (() => {
   'use strict';
   const TYPES = ['Learning Note', 'Paper Review', 'Inquiry', 'Research Project', 'Introduction'];
-  const CACHE_KEY = 'bio-home-archive-v5';
+  const CACHE_KEY = 'bio-home-archive-v6';
   const CACHE_MAX_AGE = 30 * 60 * 1000;
   const SLOTS = ['Paper Review', 'Inquiry', 'Research Project', 'Latest Entry'];
   const clean = value => String(value ?? '').trim();
@@ -99,7 +99,7 @@
 
   function saveCache(payload) {
     try {
-      sessionStorage.setItem(CACHE_KEY, JSON.stringify({savedAt: Date.now(), payload}));
+      localStorage.setItem(CACHE_KEY, JSON.stringify({savedAt: Date.now(), payload}));
     } catch { /* Storage limits must not block the cards. */ }
   }
 
@@ -143,7 +143,9 @@
     }
 
     // Restore before the network request so navigation does not show placeholders.
-    const cached = readCache() || window.BIO_ARCHIVE_BOOTSTRAP;
+    const stored = readCache();
+    const bootstrap = window.BIO_ARCHIVE_BOOTSTRAP;
+    const cached = validPayload(bootstrap) && (!stored || Date.parse(bootstrap.generatedAt) >= Date.parse(stored.generatedAt)) ? bootstrap : stored;
     if (cached) showPayload(cached);
 
     const controller = new AbortController();

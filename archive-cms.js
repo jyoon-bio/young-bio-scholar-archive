@@ -1,12 +1,12 @@
 (() => {
   'use strict';
 
-  const API_VERSION = '20261102-speed-v1';
+  const API_VERSION = '20261114-speed-v2';
   const selectedThread = new URLSearchParams(location.search).get('thread') || '';
   const LIST_API_URL = `/api/archive?v=${API_VERSION}${selectedThread ? "&mode=threads" : ""}`;
   const DETAIL_API_URL = '/api/archive-detail';
   const CACHE_KEY = selectedThread ? 'young-bio-archive-threads-v1' : 'young-bio-archive-list-v16';
-  const DETAIL_CACHE_PREFIX = 'young-bio-archive-detail-v16:';
+  const DETAIL_CACHE_PREFIX = 'young-bio-archive-detail-v17:';
   const CACHE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000;
   const CONTENT_TYPES = ['Learning Note', 'Paper Review', 'Inquiry', 'Research Project', 'Introduction'];
   const CONTENT_TYPE_ALIASES = {
@@ -307,17 +307,14 @@
   }
 
   function readDetailCache(slug) {
+    const prepared = window.BIO_ARCHIVE_DETAILS?.[slug];
+    let cached = null;
     try {
-      const cached = JSON.parse(localStorage.getItem(detailCacheKey(slug)) || 'null');
-      if (!cached?.savedAt || !cached?.payload?.ok || !cached?.payload?.post) return window.BIO_ARCHIVE_DETAILS?.[slug] || null;
-      if (Date.now() - cached.savedAt > CACHE_MAX_AGE_MS) {
-        localStorage.removeItem(detailCacheKey(slug));
-        return null;
-      }
-      return cached.payload;
-    } catch (error) {
-      return null;
-    }
+      const saved = JSON.parse(localStorage.getItem(detailCacheKey(slug)) || 'null');
+      if (saved?.payload?.ok && saved.payload.post?.slug === slug && Date.now() - saved.savedAt < CACHE_MAX_AGE_MS) cached = saved.payload;
+    } catch {}
+    if (prepared?.ok && (!cached || Date.parse(prepared.generatedAt) >= Date.parse(cached.generatedAt))) return prepared;
+    return cached;
   }
 
   function writeDetailCache(slug, payload) {
@@ -328,7 +325,22 @@
     }
   }
 
+  let detailRequestId = 0;
+  const detailRequests = new Map();
+  async function fetchDetail(slug) {
+    if (detailRequests.has(slug)) return detailRequests.get(slug);
+    const pending = (async () => {
+      const response = await fetch(`${DETAIL_API_URL}?slug=${encodeURIComponent(slug)}&v=${API_VERSION}`);
+      if (!response.ok) throw new Error(`Post request failed (${response.status}).`);
+      const payload = await response.json();
+      if (!payload.ok || payload.post?.slug !== slug) throw new Error('Invalid post response.');
+      return payload;
+    })();
+    detailRequests.set(slug, pending);
+    try { return await pending; } finally { detailRequests.delete(slug); }
+  }
   async function renderPost(slug, pushState = false) {
+    const requestId = ++detailRequestId;
     // A cached list may predate a newly published entry. Keep the requested
     // slug and fetch its detail directly instead of opening an unrelated post.
     const requested = String(slug || '').trim();
@@ -347,21 +359,17 @@
     }
 
     try {
-      const response = await fetch(`${DETAIL_API_URL}?slug=${encodeURIComponent(summary.slug)}&v=${API_VERSION}`, {
-        method: 'GET',
-        cache: 'no-store'
-      });
-      if (!response.ok) throw new Error(`Post request failed (${response.status}).`);
-      const payload = await response.json();
-      if (!payload.ok || !payload.post) throw new Error(payload.error || 'Invalid post response.');
+      // A prepared body is rendered above, independently of this background refresh.
+      if (cachedPayload && Date.now() - Date.parse(cachedPayload.generatedAt) < 5 * 60 * 1000) return;
+      const payload = await fetchDetail(summary.slug);
 
       writeDetailCache(summary.slug, payload);
       payload.post = normalizePost(payload.post);
       state.details[summary.slug] = payload.post;
-      if (!cachedPayload || payload.generatedAt !== cachedPayload.generatedAt) paintPost(payload.post, false);
+      if (requestId === detailRequestId && state.currentSlug === summary.slug && (!cachedPayload || payload.generatedAt !== cachedPayload.generatedAt)) paintPost(payload.post, false);
     } catch (error) {
       console.error(error);
-      if (!cachedPayload) {
+      if (!cachedPayload && requestId === detailRequestId && state.currentSlug === summary.slug) {
         $('#post-body').innerHTML = `
           <div class="cms-error" role="alert">
             <p>This research entry could not be loaded.</p>
@@ -460,7 +468,9 @@
   }
 
   async function loadCms() {
-    const cachedPayload = readCmsCache() || window.BIO_ARCHIVE_BOOTSTRAP;
+    const stored = readCmsCache();
+    const bootstrap = window.BIO_ARCHIVE_BOOTSTRAP;
+    const cachedPayload = bootstrap?.ok && (!stored || Date.parse(bootstrap.generatedAt) >= Date.parse(stored.generatedAt)) ? bootstrap : stored;
     if (cachedPayload) applyPayload(cachedPayload);
     else showLoading();
 

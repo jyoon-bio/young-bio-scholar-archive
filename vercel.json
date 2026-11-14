@@ -8,7 +8,15 @@
     }
   },
   "rewrites": [
-    { "source": "/archive", "destination": "/archive.html" },
-    { "source": "/archive/:slug", "destination": "/archive.html" }
-  ]
+    {
+      "source": "/archive",
+      "destination": "/archive.html"
+    },
+    {
+      "source": "/archive/:slug",
+      "destination": "/archive.html"
+    }
+  ],
+  "buildCommand": "node scripts/build-archive-snapshot.cjs --refresh",
+  "outputDirectory": "."
 }
